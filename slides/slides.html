@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<!--
+  Copyright 2010 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Original slides: Marcin Wichary (mwichary@google.com)
+  Modifications: Ernest Delgado (ernestd@google.com)
+                 Alex Russell (slightlyoff@chromium.org)
+
+  landslide modifications: Adam Zapletal (adamzap@gmail.com)
+                           Nicolas Perriault (nperriault@gmail.com)
+-->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>﻿Pytest workshop</title>
+    <!-- Styles -->
+    
+    <style type="text/css">
+      h1, h2, h3, h4, h5, h6,
+p, body, header {
+    padding: 0;
+    margin: 0;
+}
+
+div.slide {
+    position: absolute;
+    overflow: hidden;
+    width: 1024px;
+    height: 768px;
+    border-radius: 20px;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+}
+
+p.hr {
+    height: 0px;
+    font-size: 0px !important;
+    display: block;
+    border-bottom: 1px solid #fdf6e3;
+}
+header:not(:only-child) {
+    font-size: 60px;
+    position: absolute;
+    left: 30px;
+    top: 25px;
+    margin: 0;
+    padding: 0;
+}
+header h1, header h2, header h3, header h4, header h5, header h6 {
+    display: inline;
+    font-size: 110%;
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+}
+header h2:first-child {
+    margin-top: 0;
+}
+footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 5px;
+    text-align: center;
+}
+section, .slide header:only-child h1 {
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-top: 100px;
+    display: block;
+    overflow: hidden;
+}
+section {
+    position: absolute;
+    margin: 0;
+    left: 30px;
+    right: 30px;
+    top: 135px;
+    bottom: 30px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+section > * {
+    overflow: hidden;
+}
+section img.align-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+section img.align-right {
+    display: block;
+    margin-left: auto;
+    margin-right: 0;
+}
+section img.align-left {
+    display: block;
+    margin-right: auto;
+    margin-left: 0;
+}
+a {
+    text-decoration: none;
+    line-height: 110%;
+}
+ul {
+    margin: 0;
+}
+pre, code, tt {
+    font-family: Consolas, 'Bitstream Vera Sans Mono', 'Lucida Console', FreeMono, Courier, monospace;
+}
+pre, .gist .gist-file .gist-data {
+    font-size: 24px;
+    max-height: 485px;
+    padding: 0 0.5em !important;
+    margin: 0;
+    overflow: auto;
+}
+li {
+    padding: 10px 0;
+}
+li pre {
+    margin: 0;
+}
+.slide header:only-child h1 {
+    line-height: 180%;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+    height: 768px;
+    width: 1024px;
+    font-size: 68px;
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+aside {
+    display: none;
+}
+aside.source {
+    position: absolute;
+    bottom: 6px;
+    left: 10px;
+}
+aside.page_number {
+    position: absolute;
+    bottom: 6px;
+    right: 10px;
+    text-indent: 10px;
+}
+div.slide p.notes {
+    font-size: 90%;
+}
+img {
+    display: block;
+    margin: 0 auto;
+}
+.center {
+    align-self: center;
+    display: inline-block;
+}
+.large {
+    font-size: 120%;
+}
+.huge {
+    font-size: 150%;
+}
+.qr svg {
+    background: white;
+    max-height: 100%;
+}
+.qr {
+    text-align: center;
+}
+
+    </style>
+    <style type="text/css" media="print">
+      #toc,
+#help,
+.slide aside,
+.slide .notes,
+.presenter_notes,
+#current_presenter_notes,
+#presenter_note {
+  display: none;
+}
+@page {
+  size: landscape;
+  margin: 0;
+  size: 1124px 852px;
+}
+@page:last {
+  display: none;
+}
+
+
+div.slide-wrapper {
+  padding: 15px;
+}
+div.slide,
+div.slide.current,
+div.slides,
+body,
+div.presentation {
+  position: relative !important;
+  margin: 0 !important;
+}
+div.inner {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+div.slide {
+  page-break-after: avoid;
+}
+div.slide-wrapper:last-of-type .slide {
+  page-break-after: auto;
+}
+
+    </style>
+    <style type="text/css" media="screen, projection">
+      html, body {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+div.presentation,
+body.presenter_view div#current_presenter_notes section,
+div.slides, body.expose div.slides.nocontext, .presenter_notes {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    display: block;
+    background: inherit;
+}
+div.slides.nocontext .slide {
+    opacity: 0;
+}
+div.slides.nocontext .slide.future {
+}
+body.expose div.slides.nocontext .slide,
+div.slides.nocontext .slide.current {
+    opacity: 1;
+}
+div.slide {
+    display: none;
+    left: 50%;
+    top: 50%;
+    margin-top: -384px;
+    -webkit-transition: margin 0.3s ease-in, opacity 0.3s ease-in;
+    -moz-transition: margin 0.3s ease-in, opacity 0.3s ease-in;
+    -o-transition: margin 0.3s ease-in, opacity 0.3s ease-in;
+}
+.slide.far-past {
+    display: block;
+    margin-left: -2660px;
+}
+.slide.past {
+    display: block;
+    margin-left: -1586px;
+}
+.slide.current {
+    display: block;
+    margin-left: -512px;
+}
+.slide.future {
+    display: block;
+    margin-left: 562px;
+}
+.slide.far-future {
+    display: block;
+    margin-left: 1636px;
+}
+/* Content */
+
+/* render a nice scrollbar in overflowed pre area's */
+::-webkit-scrollbar-thumb {
+    background: -webkit-gradient(linear, left bottom, left top, from(#eee), to(#fefefe));
+    border: 1px solid #888;
+    -webkit-border-radius: 1ex;
+}
+::-webkit-scrollbar-corner {
+    background: #dedede;
+}
+::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+    background: #888;
+    border-radius: 5px;
+}
+.sidebar {
+    background: white;
+    color: black;
+    border-right: 5px solid #ccc;
+    z-index: 9999999;
+    height: 100%;
+    overflow: hidden;
+    top: 0;
+    position: absolute;
+    display: block;
+    margin: 0;
+    margin-left: -400px;
+    padding: 10px 16px;
+    overflow: auto;
+    -webkit-transition: margin 0.2s ease-in;
+    -moz-transition: margin 0.2s ease-in;
+    -o-transition: margin 0.2s ease-in;
+}
+.sidebar h2 {
+    text-shadow: rgba(0, 0, 0, 0.2) 0 2px 5px;
+    margin: 0 0 16px;
+    padding: 0;
+}
+.sidebar table {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border-collapse: collapse;
+}
+.sidebar table caption {
+    display: none;
+}
+.sidebar tr {
+    margin: 2px 0;
+    border-bottom: 1px solid #ccc;
+}
+.sidebar tr:last-of-type {
+    border-bottom: none;
+}
+.sidebar th {
+    text-align: left;
+    font-weight: normal;
+    max-width: 300px;
+    overflow: hidden;
+}
+.sidebar tr.sub th {
+    text-indent: 20px;
+}
+.sidebar td {
+    text-align: right;
+    min-width: 20px;
+}
+.sidebar a, .sidebar a:hover {
+    display: block;
+    text-decoration: none !important;
+    text-shadow: none !important;
+    background: none !important;
+    border-bottom: none;
+    padding: 4px 0;
+}
+.sidebar tr.active {
+    background: #ff0;
+}
+.notes {
+    display: none;
+    padding: 10px;
+    background: #ccc;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+/* Expose */
+body.expose div.slides {
+    float: left;
+    position: relative;
+    overflow: auto;
+    margin-bottom: 10px;
+}
+body.expose div.slide {
+    display: block;
+    float: left;
+    position: relative;
+    left: auto !important;
+    top: auto !important;
+    margin: 10px !important;
+    -webkit-transition: none;
+    -moz-transition: none;
+    -o-transition: none;
+    -moz-transform: scale(.30, .30);
+    -moz-transform-origin: 0 0;
+    -webkit-transform: scale(.30, .30);
+    -webkit-transform-origin: 0 0;
+    -o-transform: scale(.30, .30);
+    -o-transform-origin: 0 0;
+    -webkit-transition: none;
+    -moz-transition: none;
+    -o-transition: none;
+    cursor: pointer;
+}
+body.expose .slide-wrapper {
+    float: left;
+    position: relative;
+    margin: 2%;
+    width: 300px;
+    height: 233px;
+}
+body.expose .slide footer {
+}
+body.expose .slide .inner {
+}
+body.expose .slide.far-past,
+body.expose .slide.past,
+body.expose .slide.future,
+body.expose .slide.far-future {
+    margin-left: 0;
+}
+/* Presenter Mode */
+
+body.presenter_view div.slide {
+    display: inline;
+    position: absolute;
+    overflow: hidden;
+    -moz-transform: scale(.5, .5);
+    -moz-transform-origin: 0 0;
+    -webkit-transform: scale(.5, .5);
+    -webkit-transform-origin: 0 0;
+    -o-transform: scale(.5, .5);
+    -o-transform-origin: 0 0;
+    margin-top: -384px;
+}
+body.presenter_view .slide.far-past {
+    display: block;
+    margin-left: -1594px;
+}
+body.presenter_view .slide.past {
+    display: block;
+    margin-left: -1049px;
+}
+body.presenter_view .slide.current {
+    display: block;
+    margin-left: -512px;
+    xborder: 8px solid maroon;
+    box-shadow: 0 0 0 15px #dc322f;
+    z-index: 2;
+}
+body.presenter_view .slide.future {
+    display: block;
+    margin-left: 25px;
+    z-index: 1;
+}
+body.presenter_view .slide.far-future {
+    display: block;
+    margin-left: 562px;
+}
+body.presenter_view .slide.none {
+    display: none;
+}
+body.presenter_view div#current_presenter_notes {
+    visibility: visible;
+    display: block;
+    position: fixed;
+    overflow: auto;
+    vertical-align: middle;
+    left: 50%;
+    top: 50%;
+    bottom: 0;
+    margin-left: -475px;
+    margin-top: 20px;
+    z-index: 2;
+    width: 950px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+body.presenter_view div#current_presenter_notes section {
+    display: block;
+    overflow: visible;
+    margin: 60px 30px 0 30px;
+    font-size: 24px;
+}
+body.presenter_view div#current_presenter_notes section p {
+    margin: 0;
+}
+body.presenter_view div#current_presenter_notes h1 {
+    font-size: 50%;
+    display: block;
+}
+div#current_presenter_notes {
+    display: none;
+}
+div.slide div.presenter_notes {
+    display: none;
+}
+#blank {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: black;
+    width: 100%;
+    height: 100%;
+    z-index: 64;
+    display: none;
+}
+
+    </style>
+    <style type="text/css">
+      /* ======================================
+                 FONTS
+====================================== */
+
+h1, h2, h3, h4, h5, h6,
+body, header {
+    font-family: 'Candara', 'Calibri', 'Segoe UI Semilight', 'Corbel', 'Trebuchet Ms', 'Segoe UI', sans-serif;
+}
+section {
+    font: 34px 'Palatino', 'Palatino Linotype', 'URW Palladio L', 'Century Schoolbook L', 'Georgia', serif;
+}
+
+/* ======================================
+                 COLORS
+====================================== */
+.yellow { color: #b58900; }
+.orange { color: #cb4b16; }
+.red { color: #dc322f; }
+.magenta { color: #d33682; }
+.violet { color: #6c71c4; }
+.blue { color: #268bd2; }
+.cyan { color: #2aa198; }
+.green { color: #859900; }
+
+body {
+    background: black;
+    color: #eee;
+}
+footer {
+    color: #aaa;
+}
+a, a:hover {
+    color: #268bd2;
+    padding: 0;
+    text-decoration: none;
+    background-color: transparent;
+    background-image: linear-gradient(#268bd2, #268bd2);
+    background-size: 1px 1px;
+    background-repeat: repeat-x;
+    background-position: 0% 95%;
+    text-shadow: -0.06em -0.03ex #222,-0.06em -0.06ex #222,-0.06em -0.09ex #222,0.12em 0ex #222,-0.09em -0.09ex #222,-0.09em -0.06ex #222,-0.09em -0.03ex #222,0.12em -0.21ex #222,0.12em -0.27ex #222,0.12em -0.24ex #222,0em 0.08ex #222,0em -0.18ex #222,0em -0.15ex #222,0em 0.02ex #222,-0.06em 0ex #222,-0.03em 0ex #222,0em 0.06ex #222,0em -0.12ex #222,-0.12em -0.06ex #222,-0.12em -0.03ex #222,0.15em 0ex #222,-0.12em -0.09ex #222,0.03em -0.21ex #222,-0.09em -0.18ex #222,0.03em -0.24ex #222,0.03em -0.27ex #222,-0.09em -0.12ex #222,-0.09em -0.15ex #222,0.09em -0.27ex #222,0.09em -0.24ex #222,0.09em -0.21ex #222,0em 0ex #222,-0.15em 0.08ex #222,0.06em 0ex #222,0.12em -0.12ex #222,-0.15em 0.02ex #222,-0.15em 0.06ex #222,-0.15em 0.04ex #222,-0.15em -0.15ex #222,-0.09em -0.21ex #222,-0.09em -0.27ex #222,-0.09em -0.24ex #222,0.06em 0.08ex #222,-0.06em -0.21ex #222,0.06em 0.06ex #222,0.06em 0.04ex #222,-0.15em -0.18ex #222,-0.06em -0.24ex #222,-0.06em -0.27ex #222,0.15em 0.08ex #222,0.12em -0.09ex #222,0.03em 0.02ex #222,0.03em 0.04ex #222,0.03em 0.06ex #222,0.09em -0.18ex #222,0.03em 0.08ex #222,0.09em -0.15ex #222,0.12em -0.03ex #222,0.09em -0.12ex #222,0.12em -0.06ex #222,0.15em 0.02ex #222,-0.15em -0.03ex #222,-0.06em -0.15ex #222,-0.15em -0.06ex #222,-0.06em -0.12ex #222,-0.15em -0.09ex #222,-0.12em -0.21ex #222,-0.06em -0.18ex #222,-0.12em -0.27ex #222,-0.12em -0.24ex #222,-0.03em 0.04ex #222,-0.03em 0.06ex #222,0.09em -0.09ex #222,-0.03em 0.02ex #222,0.09em -0.06ex #222,-0.03em 0.08ex #222,0.09em -0.03ex #222,0.09em 0ex #222,0em -0.09ex #222,0em -0.06ex #222,-0.15em 0ex #222,0em -0.03ex #222,-0.12em 0.02ex #222,0.12em 0.06ex #222,-0.12em 0.06ex #222,-0.12em 0.04ex #222,-0.12em -0.12ex #222,-0.12em 0.08ex #222,0.15em -0.15ex #222,0.15em -0.12ex #222,-0.03em -0.24ex #222,0em -0.24ex #222,-0.03em -0.27ex #222,0.15em -0.18ex #222,-0.03em -0.21ex #222,0.06em -0.24ex #222,0.06em -0.27ex #222,-0.09em 0ex #222,0.06em -0.21ex #222,-0.15em -0.12ex #222,-0.06em 0.08ex #222,-0.06em 0.02ex #222,-0.06em 0.06ex #222,-0.06em 0.04ex #222,-0.12em -0.18ex #222,-0.15em -0.21ex #222,-0.15em -0.24ex #222,-0.15em -0.27ex #222,0.06em 0.02ex #222,0.15em -0.21ex #222,0.03em 0ex #222,0.15em -0.27ex #222,0.09em 0.02ex #222,0.12em -0.18ex #222,0.09em 0.06ex #222,0.09em 0.04ex #222,0em 0.04ex #222,0.09em 0.08ex #222,0.12em -0.15ex #222,-0.03em -0.03ex #222,-0.03em -0.06ex #222,-0.12em -0.15ex #222,0em -0.27ex #222,0em -0.21ex #222,-0.03em -0.09ex #222,0.06em -0.09ex #222,0.03em -0.18ex #222,0.12em 0.08ex #222,0.03em -0.15ex #222,0.12em 0.04ex #222,0.12em 0.02ex #222,0.06em -0.06ex #222,0.03em -0.12ex #222,-0.03em -0.12ex #222,-0.03em -0.15ex #222,-0.03em -0.18ex #222,0.15em 0.06ex #222,0.15em 0.04ex #222,0.15em -0.06ex #222,0.15em -0.03ex #222,0.15em -0.09ex #222,0.06em -0.18ex #222,0.03em -0.09ex #222,0.03em -0.03ex #222,0.06em -0.12ex #222,0.03em -0.06ex #222,0.06em -0.15ex #222,0.06em -0.03ex #222,-0.09em 0.08ex #222,-0.09em 0.02ex #222,-0.12em 0ex #222,-0.09em 0.06ex #222,-0.09em 0.04ex #222,0.15em -0.24ex #222;
+}
+a:hover {
+    color: #2aa198;
+    background-image: linear-gradient(#2aa198, #2aa198), linear-gradient(#2aa198, #2aa198), linear-gradient(#2aa198, #2aa198);
+}
+.presenter_notes a, .presenter_notes a:hover,
+div#current_presenter_notes a, div#current_presenter_notes a:hover {
+    text-shadow: -0.06em -0.03ex #eee,-0.06em -0.06ex #eee,-0.06em -0.09ex #eee,0.12em 0ex #eee,-0.09em -0.09ex #eee,-0.09em -0.06ex #eee,-0.09em -0.03ex #eee,0.12em -0.21ex #eee,0.12em -0.27ex #eee,0.12em -0.24ex #eee,0em 0.08ex #eee,0em -0.18ex #eee,0em -0.15ex #eee,0em 0.02ex #eee,-0.06em 0ex #eee,-0.03em 0ex #eee,0em 0.06ex #eee,0em -0.12ex #eee,-0.12em -0.06ex #eee,-0.12em -0.03ex #eee,0.15em 0ex #eee,-0.12em -0.09ex #eee,0.03em -0.21ex #eee,-0.09em -0.18ex #eee,0.03em -0.24ex #eee,0.03em -0.27ex #eee,-0.09em -0.12ex #eee,-0.09em -0.15ex #eee,0.09em -0.27ex #eee,0.09em -0.24ex #eee,0.09em -0.21ex #eee,0em 0ex #eee,-0.15em 0.08ex #eee,0.06em 0ex #eee,0.12em -0.12ex #eee,-0.15em 0.02ex #eee,-0.15em 0.06ex #eee,-0.15em 0.04ex #eee,-0.15em -0.15ex #eee,-0.09em -0.21ex #eee,-0.09em -0.27ex #eee,-0.09em -0.24ex #eee,0.06em 0.08ex #eee,-0.06em -0.21ex #eee,0.06em 0.06ex #eee,0.06em 0.04ex #eee,-0.15em -0.18ex #eee,-0.06em -0.24ex #eee,-0.06em -0.27ex #eee,0.15em 0.08ex #eee,0.12em -0.09ex #eee,0.03em 0.02ex #eee,0.03em 0.04ex #eee,0.03em 0.06ex #eee,0.09em -0.18ex #eee,0.03em 0.08ex #eee,0.09em -0.15ex #eee,0.12em -0.03ex #eee,0.09em -0.12ex #eee,0.12em -0.06ex #eee,0.15em 0.02ex #eee,-0.15em -0.03ex #eee,-0.06em -0.15ex #eee,-0.15em -0.06ex #eee,-0.06em -0.12ex #eee,-0.15em -0.09ex #eee,-0.12em -0.21ex #eee,-0.06em -0.18ex #eee,-0.12em -0.27ex #eee,-0.12em -0.24ex #eee,-0.03em 0.04ex #eee,-0.03em 0.06ex #eee,0.09em -0.09ex #eee,-0.03em 0.02ex #eee,0.09em -0.06ex #eee,-0.03em 0.08ex #eee,0.09em -0.03ex #eee,0.09em 0ex #eee,0em -0.09ex #eee,0em -0.06ex #eee,-0.15em 0ex #eee,0em -0.03ex #eee,-0.12em 0.02ex #eee,0.12em 0.06ex #eee,-0.12em 0.06ex #eee,-0.12em 0.04ex #eee,-0.12em -0.12ex #eee,-0.12em 0.08ex #eee,0.15em -0.15ex #eee,0.15em -0.12ex #eee,-0.03em -0.24ex #eee,0em -0.24ex #eee,-0.03em -0.27ex #eee,0.15em -0.18ex #eee,-0.03em -0.21ex #eee,0.06em -0.24ex #eee,0.06em -0.27ex #eee,-0.09em 0ex #eee,0.06em -0.21ex #eee,-0.15em -0.12ex #eee,-0.06em 0.08ex #eee,-0.06em 0.02ex #eee,-0.06em 0.06ex #eee,-0.06em 0.04ex #eee,-0.12em -0.18ex #eee,-0.15em -0.21ex #eee,-0.15em -0.24ex #eee,-0.15em -0.27ex #eee,0.06em 0.02ex #eee,0.15em -0.21ex #eee,0.03em 0ex #eee,0.15em -0.27ex #eee,0.09em 0.02ex #eee,0.12em -0.18ex #eee,0.09em 0.06ex #eee,0.09em 0.04ex #eee,0em 0.04ex #eee,0.09em 0.08ex #eee,0.12em -0.15ex #eee,-0.03em -0.03ex #eee,-0.03em -0.06ex #eee,-0.12em -0.15ex #eee,0em -0.27ex #eee,0em -0.21ex #eee,-0.03em -0.09ex #eee,0.06em -0.09ex #eee,0.03em -0.18ex #eee,0.12em 0.08ex #eee,0.03em -0.15ex #eee,0.12em 0.04ex #eee,0.12em 0.02ex #eee,0.06em -0.06ex #eee,0.03em -0.12ex #eee,-0.03em -0.12ex #eee,-0.03em -0.15ex #eee,-0.03em -0.18ex #eee,0.15em 0.06ex #eee,0.15em 0.04ex #eee,0.15em -0.06ex #eee,0.15em -0.03ex #eee,0.15em -0.09ex #eee,0.06em -0.18ex #eee,0.03em -0.09ex #eee,0.03em -0.03ex #eee,0.06em -0.12ex #eee,0.03em -0.06ex #eee,0.06em -0.15ex #eee,0.06em -0.03ex #eee,-0.09em 0.08ex #eee,-0.09em 0.02ex #eee,-0.12em 0ex #eee,-0.09em 0.06ex #eee,-0.09em 0.04ex #eee,0.15em -0.24ex #eee;
+}
+code, tt.docutils.literal {
+    color: #6c71c4;
+}
+div.slide {
+    background-color: #222;
+    color: #eee;
+}
+body.expose div.slide:hover {
+    box-shadow: 0 0 0 15px #268bd2;
+}
+body.expose .slide.current {
+    box-shadow: 0 0 0 30px #b58900;
+}
+body.expose .slide.current:hover {
+    box-shadow: 0 0 0 15px #268bd2, 0 0 0 30px #b58900;
+}
+.presenter_notes {
+    background: #eee;
+    color: #222;
+}
+::-webkit-scrollbar-thumb {
+    background: #222;
+    border-color: #444;
+}
+::-webkit-scrollbar {
+    background: #444;
+    border-color: #444;
+}
+::-webkit-scrollbar-corner {
+    background: #222;
+}
+.qr svg {
+    box-shadow: inset 0 0 10px #eee8d5;
+}
+div.slides, body.expose div.slides.nocontext,
+body.expose .slide.current,
+body.expose .slide.current .inner {
+    /*background: #000;*/
+}
+
+
+/* See: http://stylishthemes.github.io/GitHub-Dark/ */
+/* Synic syntax highlighting */
+pre pre:not(.diff-line-pre),pre table{background:#000!important;color:#fffff0!important;}
+pre .hll{background-color:#ffc!important;}
+pre .cp{color:#ffa0a0!important;}
+pre .gd{color:#add8e6!important;background-color:#e0ffff!important;}
+pre .ge{color:#fffff0!important;text-decoration:underline!important;}
+pre .gi{color:#00f!important;background-color:#e0ffff!important;}
+pre .go{color:#008b8b!important;}
+pre .ni{color:#daa520!important;}
+pre .ow{color:#8673e8!important;}
+pre .c,pre .cm,pre .c1,pre .cs{color:#708090!important;}
+pre .err,pre .g,pre .l,pre .n,pre .o,pre .x,pre .p,pre .gp,
+pre .gs,pre .ld,pre .nb,pre .nc,pre .nd,pre .nn,pre .nx,pre .py,
+pre .w,pre .bp{color:#fffff0!important;}
+pre .k,pre .kc,pre .kd,pre .kn,pre .kp,pre .kr,
+pre .nt{color:#f0e68c!important;}
+pre .gr,pre .gt{color:red!important;background-color:#faf0e6!important;border-radius:2px;}
+pre .gh,pre .gu{color:#ee0!important;}
+pre .kt,pre .ne,pre .nl{color:#ffdead!important;}
+pre .m,pre .no,pre .mf,pre .mh,pre .mi,pre .mo,
+pre .il{color:#cdb7b5!important;}
+pre .s,pre .sb,pre .sc,pre .sd,pre .s2,pre .se,pre .sh,pre .si,
+pre .sx,pre .sr,pre .s1,pre .ss{color:#9ac0cd!important;}
+pre .na,pre .nf,pre .nv,pre .vc,pre .vg,
+pre .vi{color:#68838b!important;font-weight:700!important;}
+
+.white {
+  background: white;
+}
+
+    </style>
+    
+    
+      
+      <style type="text/css" media="screen, projection">
+        .center {
+    text-align: center;
+}
+
+.warn {
+    font-weight: bold;
+}
+
+.small {
+    font-size: 80%;
+}
+.smaller {
+    font-size: 60%;
+}
+
+.tiny, .tiny * {
+    font-size: 9px;
+}
+
+.fancy {
+    font-size: 120%;
+    font-weight: bold;
+}
+
+      </style>
+      
+    
+    <!-- /Styles -->
+    <!-- Javascripts -->
+    
+    <script>
+      function main() {
+    // Since we don't have the fallback of attachEvent and
+    // other IE only stuff we won't try to run JS for IE.
+    // It will run though when using Google Chrome Frame
+    if (document.all) { return; }
+
+    var currentSlideNo;
+    var notesOn = false;
+    var expanded = false;
+    var hiddenContext = false;
+    var blanked = false;
+    var slides = document.getElementsByClassName('slide');
+    var touchStartX = 0;
+    var spaces = /\s+/, a1 = [''];
+    var tocOpened = false;
+    var helpOpened = false;
+    var overviewActive = false;
+    var modifierKeyDown = false;
+    var scale = 1;
+    var showingPresenterView = false;
+    var presenterViewWin = null;
+    var isPresenterView = false;
+
+    var str2array = function(s) {
+        if (typeof s == 'string' || s instanceof String) {
+            if (s.indexOf(' ') < 0) {
+                a1[0] = s;
+                return a1;
+            } else {
+                return s.split(spaces);
+            }
+        }
+        return s;
+    };
+
+    var trim = function(str) {
+        return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    };
+
+    var addClass = function(node, classStr) {
+        classStr = str2array(classStr);
+        var cls = ' ' + node.className + ' ';
+        for (var i = 0, len = classStr.length, c; i < len; ++i) {
+            c = classStr[i];
+            if (c && cls.indexOf(' ' + c + ' ') < 0) {
+                cls += c + ' ';
+            }
+        }
+        node.className = trim(cls);
+    };
+
+    var removeClass = function(node, classStr) {
+        var cls;
+        if (!node) {
+            throw 'no node provided';
+        }
+        if (classStr !== undefined) {
+            classStr = str2array(classStr);
+            cls = ' ' + node.className + ' ';
+            for (var i = 0, len = classStr.length; i < len; ++i) {
+                cls = cls.replace(' ' + classStr[i] + ' ', ' ');
+            }
+            cls = trim(cls);
+        } else {
+            cls = '';
+        }
+        if (node.className != cls) {
+            node.className = cls;
+        }
+    };
+
+    var getSlideEl = function(slideNo) {
+        if (slideNo > 0) {
+            return slides[slideNo - 1];
+        } else {
+            return null;
+        }
+    };
+
+    var getSlideTitle = function(slideNo) {
+        var el = getSlideEl(slideNo);
+        if (el) {
+            var headers = el.getElementsByTagName('header');
+            if (headers.length > 0) {
+                return el.getElementsByTagName('header')[0].innerText;
+            }
+        }
+        return null;
+    };
+
+    var getSlidePresenterNote = function(slideNo) {
+        var el = getSlideEl(slideNo);
+        if (el) {
+            var n = el.getElementsByClassName('presenter_notes');
+            if (n.length > 0) {
+                return n[0];
+            }
+        }
+        return null;
+    };
+
+    var changeSlideElClass = function(slideNo, className) {
+        var el = getSlideEl(slideNo);
+        if (el) {
+            removeClass(el, 'far-past past current future far-future none');
+            addClass(el, className);
+        }
+    };
+
+    var updateSlideClasses = function(updateOther) {
+        window.location.hash = (isPresenterView ? "presenter:" : "slide:") + currentSlideNo;
+
+        for (var i=1; i<currentSlideNo-1; i++) {
+            changeSlideElClass(i, 'far-past');
+        }
+
+        changeSlideElClass(currentSlideNo - 1, 'past');
+        changeSlideElClass(currentSlideNo, 'current');
+        changeSlideElClass(currentSlideNo + 1, 'future');
+        changeSlideElClass(currentSlideNo + 2, 'far-future');
+
+        for (i=currentSlideNo+3; i<slides.length+1; i++) {
+            changeSlideElClass(i, 'none');
+        }
+
+        highlightCurrentTocLink();
+
+        document.getElementsByTagName('title')[0].innerText = getSlideTitle(currentSlideNo);
+
+        updatePresenterNotes();
+
+        if (updateOther) { updateOtherPage(); }
+    };
+
+    var updatePresenterNotes = function() {
+        if (!isPresenterView) { return; }
+
+        var existingNote = document.getElementById('current_presenter_notes');
+        var currentNote = getSlidePresenterNote(currentSlideNo).cloneNode(true);
+        currentNote.setAttribute('id', 'presenter_note');
+
+        existingNote.replaceChild(currentNote, document.getElementById('presenter_note'));
+    };
+
+    var highlightCurrentTocLink = function() {
+        var toc = document.getElementById('toc');
+
+        if (toc) {
+            var tocRows = toc.getElementsByTagName('tr');
+            for (var i=0; i<tocRows.length; i++) {
+                removeClass(tocRows.item(i), 'active');
+            }
+
+            var currentTocRow = document.getElementById('toc-row-' + currentSlideNo);
+            if (currentTocRow) {
+                addClass(currentTocRow, 'active');
+            }
+        }
+    };
+
+    var updateOtherPage = function() {
+        if (!showingPresenterView) { return; }
+
+        var w = isPresenterView ? window.opener : presenterViewWin;
+        w.postMessage('slide#' + currentSlideNo, '*');
+    };
+
+    var nextSlide = function() {
+        if (currentSlideNo < slides.length) {
+            currentSlideNo++;
+        }
+        updateSlideClasses(true);
+    };
+
+    var prevSlide = function() {
+        if (currentSlideNo > 1) {
+            currentSlideNo--;
+        }
+        updateSlideClasses(true);
+    };
+
+    var showNotes = function() {
+        var slide = getSlideEl(currentSlideNo),
+            notes = slide.getElementsByClassName('presenter_notes');
+        for (var i = 0, len = notes.length; i < len; i++) {
+            notes.item(i).style.display = (notesOn) ? 'none':'block';
+        }
+        notesOn = !notesOn;
+        if (notesOn) {
+            addClass(slide, 'presenter_notes');
+        } else {
+            removeClass(slide, 'presenter_notes');
+        }
+    };
+
+    var showSlideNumbers = function() {
+        var asides = document.getElementsByClassName('page_number');
+        var hidden = asides[0].style.display != 'block';
+        for (var i = 0; i < asides.length; i++) {
+            asides.item(i).style.display = hidden ? 'block' : 'none';
+        }
+    };
+
+    var showSlideSources = function() {
+        var asides = document.getElementsByClassName('source');
+        var hidden = asides[0].style.display != 'block';
+        for (var i = 0; i < asides.length; i++) {
+            asides.item(i).style.display = hidden ? 'block' : 'none';
+        }
+    };
+
+    var showToc = function() {
+        if (helpOpened) {
+                showHelp();
+        }
+        var toc = document.getElementById('toc');
+        if (toc) {
+            toc.style.marginLeft = tocOpened ? '-' + (toc.clientWidth + 20) + 'px' : '0px';
+            tocOpened = !tocOpened;
+        }
+        updateOverview();
+    };
+
+    var showHelp = function() {
+        if (tocOpened) {
+                showToc();
+        }
+
+        var help = document.getElementById('help');
+
+        if (help) {
+            help.style.marginLeft = helpOpened ? '-' + (help.clientWidth + 20) + 'px' : '0px';
+            helpOpened = !helpOpened;
+        }
+    };
+
+    var showPresenterView = function() {
+        if (isPresenterView) { return; }
+
+        if (showingPresenterView) {
+            if (presenterViewWin)
+                presenterViewWin.close();
+            presenterViewWin = null;
+            showingPresenterView = false;
+        } else {
+            presenterViewWin = open(window.location.pathname + "#presenter:" + currentSlideNo, 'presenter_notes',
+                                    'directories=no,location=no,toolbar=no,menubar=no,copyhistory=no');
+            showingPresenterView = true;
+        }
+    };
+
+    var toggleOverview = function() {
+        if (!overviewActive) {
+            addClass(document.body, 'expose');
+            overviewActive = true;
+            setScale(1);
+        } else {
+            removeClass(document.body, 'expose');
+            overviewActive = false;
+            if (expanded) {
+                setScale(scale);    // restore scale
+            }
+        }
+        updateOverview();
+    };
+
+    var updateOverview = function() {
+        try {
+            var presentation = document.getElementsByClassName('presentation')[0];
+        } catch (e) {
+            return;
+        }
+
+        if (isPresenterView) {
+            var action = overviewActive ? removeClass : addClass;
+            action(document.body, 'presenter_view');
+        }
+
+        var toc = document.getElementById('toc');
+
+        if (!toc) {
+            return;
+        }
+
+        if (!tocOpened || !overviewActive) {
+            presentation.style.marginLeft = '0px';
+            presentation.style.width = '100%';
+        } else {
+            presentation.style.marginLeft = toc.clientWidth + 'px';
+            presentation.style.width = (presentation.clientWidth - toc.clientWidth) + 'px';
+        }
+    };
+
+    var computeScale = function() {
+        var cSlide = document.getElementsByClassName('current')[0];
+        var sx = (cSlide.clientWidth + 20) / window.innerWidth;
+        var sy = (cSlide.clientHeight + 20) / window.innerHeight;
+        return 1 / Math.max(sy, sx);
+    };
+
+    var setScale = function(scale) {
+        var presentation = document.getElementsByClassName('slides')[0];
+        var transform = 'scale(' + scale + ')';
+        presentation.style.MozTransform = transform;
+        presentation.style.WebkitTransform = transform;
+        presentation.style.OTransform = transform;
+        presentation.style.msTransform = transform;
+        presentation.style.transform = transform;
+    };
+
+    var expandSlides = function() {
+        if (overviewActive) {
+            return;
+        }
+        if (expanded) {
+            setScale(1);
+            showContext();
+            expanded = false;
+        } else {
+            setExpanded();
+        }
+    };
+    var setExpanded = function() {
+        scale = computeScale();
+        setScale(scale);
+        expanded = true;
+        hideContext();
+    };
+
+    var showContext = function() {
+        var presentation = document.getElementsByClassName('slides')[0];
+        removeClass(presentation, 'nocontext');
+        hiddenContext = true;
+    };
+
+    var hideContext = function() {
+        if (isPresenterView) { return; }
+        var presentation = document.getElementsByClassName('slides')[0];
+        addClass(presentation, 'nocontext');
+        hiddenContext = false;
+    };
+
+    var toggleContext = function() {
+        if (hiddenContext) {
+            hideContext();
+        } else {
+            showContext();
+        }
+    };
+
+    var toggleBlank = function() {
+        blank_elem = document.getElementById('blank');
+
+        blank_elem.style.display = blanked ? 'none' : 'block';
+
+        blanked = !blanked;
+    };
+
+    var isModifierKey = function(keyCode) {
+        switch (keyCode) {
+            case 16: // shift
+            case 17: // ctrl
+            case 18: // alt
+            case 91: // command
+                return true;
+                break;
+            default:
+                return false;
+                break;
+        }
+    };
+
+    var checkModifierKeyUp = function(event) {
+        if (isModifierKey(event.keyCode)) {
+            modifierKeyDown = false;
+        }
+    };
+
+    var checkModifierKeyDown = function(event) {
+        if (isModifierKey(event.keyCode)) {
+            modifierKeyDown = true;
+        }
+    };
+
+    var handleBodyKeyDown = function(event) {
+        if (modifierKeyDown && event.keyCode == 80) {
+            setScale(1);
+            showContext();
+            expanded = false;
+        }
+        if (modifierKeyDown) {
+            return
+        }
+        switch (event.keyCode) {
+            case 13: // Enter
+                if (overviewActive) {
+                    toggleOverview();
+                }
+                break;
+            case 27: // ESC
+                toggleOverview();
+                break;
+            case 37: // left arrow
+            case 33: // page up
+                event.preventDefault();
+                prevSlide();
+                break;
+            case 39: // right arrow
+            case 32: // space
+            case 34: // page down
+                event.preventDefault();
+                nextSlide();
+                break;
+            case 50: // 2
+                showNotes();
+                break;
+            case 190: // .
+            case 48: // 0
+            case 66: // b
+                if (!overviewActive) {
+                    toggleBlank();
+                }
+                break;
+            case 67: // c
+                if (!overviewActive) {
+                    toggleContext();
+                }
+                break;
+            case 69: // e
+                if (!overviewActive) {
+                    expandSlides();
+                }
+                break;
+            case 72: // h
+                showHelp();
+                break;
+            case 78: // n
+                if (!overviewActive) {
+                    showSlideNumbers();
+                }
+                break;
+            case 80: // p
+                if (!overviewActive) {
+                    showPresenterView();
+                }
+                break;
+            case 83: // s
+                if (!overviewActive) {
+                    showSlideSources();
+                }
+                break;
+            case 84: // t
+                showToc();
+                break;
+        }
+    };
+
+    var handleWheel = function(event) {
+        if (tocOpened || helpOpened || overviewActive) {
+            return;
+        }
+
+        var delta = 0;
+
+        if (!event) {
+            event = window.event;
+        }
+
+        if (event.wheelDelta) {
+            delta = event.wheelDelta/120;
+            if (window.opera) delta = -delta;
+        } else if (event.detail) {
+            delta = -event.detail/3;
+        }
+
+        if (delta && delta <0) {
+            nextSlide();
+        } else if (delta) {
+            prevSlide();
+        }
+    };
+
+    var addSlideClickListeners = function() {
+        for (var i=0; i < slides.length; i++) {
+            var slide = slides.item(i);
+            slide.num = i + 1;
+            slide.addEventListener('click', function(e) {
+                if (overviewActive) {
+                    currentSlideNo = this.num;
+                    toggleOverview();
+                    updateSlideClasses(true);
+                    e.preventDefault();
+                }
+                return false;
+            }, true);
+        }
+    };
+
+    var addRemoteWindowControls = function() {
+        window.addEventListener("message", function(e) {
+            if (e.data.indexOf("slide#") != -1) {
+                    currentSlideNo = Number(e.data.replace('slide#', ''));
+                    updateSlideClasses(false);
+            }
+        }, false);
+    };
+
+    var addTouchListeners = function() {
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].pageX;
+        }, false);
+        document.addEventListener('touchend', function(e) {
+            var pixelsMoved = touchStartX - e.changedTouches[0].pageX;
+            var SWIPE_SIZE = 150;
+            if (pixelsMoved > SWIPE_SIZE) {
+                nextSlide();
+            }
+            else if (pixelsMoved < -SWIPE_SIZE) {
+             prevSlide();
+            }
+        }, false);
+    };
+
+    var addTocLinksListeners = function() {
+        var toc = document.getElementById('toc');
+        if (toc) {
+            var tocLinks = toc.getElementsByTagName('a');
+            for (var i=0; i < tocLinks.length; i++) {
+                tocLinks.item(i).addEventListener('click', function(e) {
+                    currentSlideNo = Number(this.attributes['href'].value.replace('#slide:', ''));
+                    updateSlideClasses(true);
+                    e.preventDefault();
+                }, true);
+            }
+        }
+    };
+
+    // initialize
+
+    (function() {
+        if (window.location.hash == "") {
+            currentSlideNo = 1;
+        } else if (window.location.hash.indexOf("#presenter:") != -1) {
+            currentSlideNo = Number(window.location.hash.replace('#presenter:', ''));
+            isPresenterView = true;
+            showingPresenterView = true;
+            presenterViewWin = window;
+            addClass(document.body, 'presenter_view');
+        } else {
+            currentSlideNo = Number(window.location.hash.replace('#slide:', '')) || 1;
+        }
+
+        document.addEventListener('keyup', checkModifierKeyUp);
+        document.addEventListener('keydown', handleBodyKeyDown);
+        document.addEventListener('keydown', checkModifierKeyDown);
+        document.addEventListener('visibilitychange', function(event) {
+            if (document.hidden) {
+                modifierKeyDown = false;
+            }
+        }, false);
+        setInterval(function() {
+            if (!document.hasFocus()) {
+                modifierKeyDown = false;
+            }
+        }, 100);
+
+        window.addEventListener("mousewheel", handleWheel);
+        window.addEventListener("DOMMouseScroll", handleWheel);
+        window.addEventListener("DOMContentLoaded", expandSlides);
+        window.onresize = function(){
+            setScale(!overviewActive && expanded ? scale = computeScale() : 1);
+        }
+
+        for (var i = 0, el; el = slides[i]; i++) {
+            addClass(el, 'slide far-future');
+        }
+        updateSlideClasses(false);
+
+        // add support for finger events (filter it by property detection?)
+        addTouchListeners();
+        addTocLinksListeners();
+        addSlideClickListeners();
+        addRemoteWindowControls();
+    })();
+}
+
+    </script>
+    
+    
+    
+    <!-- /Javascripts -->
+</head>
+<body>
+  <div id="blank"></div>
+  <div class="presentation">
+    <div id="current_presenter_notes">
+      <div id="presenter_note"></div>
+    </div>
+    <div class="slides">
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-1">
+          <div class="inner">
+            
+            <header><h1>﻿Pytest workshop</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              1/3
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-2">
+          <div class="inner">
+            
+            <header><h1>Who</h1></header>
+            
+            
+            <section><p class="center">Ionel Cristian Mărieș</p>
+<p class="center">Gabriel Muj</p>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
+<p class="small center">Based on content kindly provided by Holger Krekel and Florian Bruhin.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              2/3
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-3">
+          <div class="inner">
+            
+            <header><h1>Workshop content</h1></header>
+            
+            
+            <section><ul class="simple">
+<li>preparation &amp; setting up tox/virtualenv/django/pytest</li>
+<li>writting tests for django app (the tutorial polls app) while demonstrating<ul>
+<li>test discovery</li>
+<li>classes vs function tests</li>
+<li>assertion helpers</li>
+<li>marks, skipping &amp; xfailing</li>
+<li>parametrization</li>
+<li>fixtures, scoping, finalization</li>
+<li>builtin fixtures overview</li>
+<li>pytest-django plugin</li>
+</ul>
+</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              3/3
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div id="toc" class="sidebar hidden">
+    <h2>Table of Contents</h2>
+    <table>
+      <caption>Table of Contents</caption>
+      
+      <tr id="toc-row-1">
+        <th><a href="#slide:1">﻿Pytest workshop</a></th>
+        <td><a href="#slide:1">1</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-2">
+        <th><a href="#slide:2">Who</a></th>
+        <td><a href="#slide:2">2</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-3">
+        <th><a href="#slide:3">Workshop content</a></th>
+        <td><a href="#slide:3">3</a></td>
+      </tr>
+      
+      
+    </table>
+  </div>
+  
+  <div id="help" class="sidebar hidden">
+    <h2>Help</h2>
+    <table>
+      <caption>Help</caption>
+      <tr>
+        <th>Table of Contents</th>
+        <td>t</td>
+      </tr>
+      <tr>
+        <th>Exposé</th>
+        <td>ESC</td>
+      </tr>
+      <tr>
+        <th>Full screen slides</th>
+        <td>e</td>
+      </tr>
+      <tr>
+        <th>Presenter View</th>
+        <td>p</td>
+      </tr>
+      <tr>
+        <th>Source Files</th>
+        <td>s</td>
+      </tr>
+      <tr>
+        <th>Slide Numbers</th>
+        <td>n</td>
+      </tr>
+      <tr>
+        <th>Toggle screen blanking</th>
+        <td>b</td>
+      </tr>
+      <tr>
+        <th>Show/hide slide context</th>
+        <td>c</td>
+      </tr>
+      <tr>
+        <th>Notes</th>
+        <td>2</td>
+      </tr>
+      <tr>
+        <th>Help</th>
+        <td>h</td>
+      </tr>
+    </table>
+    <br>
+    <strong>Generated with Darkslide 2.3.3</strong>
+  </div>
+  <script>main()</script>
+</body>
+</html>

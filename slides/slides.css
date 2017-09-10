@@ -1,0 +1,23 @@
+.center {
+    text-align: center;
+}
+
+.warn {
+    font-weight: bold;
+}
+
+.small {
+    font-size: 80%;
+}
+.smaller {
+    font-size: 60%;
+}
+
+.tiny, .tiny * {
+    font-size: 9px;
+}
+
+.fancy {
+    font-size: 120%;
+    font-weight: bold;
+}
