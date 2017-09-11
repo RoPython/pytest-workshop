@@ -35,11 +35,13 @@ Workshop content
 * preparation & setting up tox/virtualenv/django/pytest
 * writting tests for django app (the tutorial polls app) while demonstrating
 
-  * test discovery
-  * classes vs function tests
-  * assertion helpers
-  * marks, skipping & xfailing
-  * parametrization
-  * fixtures, scoping, finalization
-  * builtin fixtures overview
-  * pytest-django plugin
+  .. class:: smaller
+
+    * test discovery
+    * classes vs function tests
+    * assertion helpers
+    * marks, skipping & xfailing
+    * parametrization
+    * fixtures, scoping, finalization
+    * builtin fixtures overview
+    * pytest-django plugin
