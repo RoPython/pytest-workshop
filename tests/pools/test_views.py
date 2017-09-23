@@ -1,7 +1,5 @@
 from datetime import timedelta
 
-import pytest
-from django.http import Http404
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.encoding import force_text
@@ -19,31 +17,31 @@ def test_index_view_no_question(client, db):
     assert list(response.context_data['latest_question_list']) == []
 
 
-def test_index_view_one_question(client, db):
+def test_index_view_one_question(client, question_generator):
     now = timezone.now()
-    question1 = Question.objects.create(question_text="Question 1", pub_date=now)
+    question1 = question_generator(question_text="Question 1", pub_date=now)
 
     response = client.get(reverse('polls:index'))
     assert response.status_code == 200
     assert list(response.context_data['latest_question_list']) == [question1]
 
 
-def test_index_view_two_questions(client, db):
+def test_index_view_two_questions(client, question_generator):
     now = timezone.now()
-    question1 = Question.objects.create(question_text="Question 1", pub_date=now)
-    question2 = Question.objects.create(question_text="Question 2", pub_date=now - timedelta(hours=1))
+    question1 = question_generator(question_text="Question 1", pub_date=now)
+    question2 = question_generator(question_text="Question 2", pub_date=now - timedelta(hours=1))
 
     response = client.get(reverse('polls:index'))
     assert response.status_code == 200
     assert list(response.context_data['latest_question_list']) == [question1, question2]
 
 
-def test_index_view_only_last_five_questions(client, db):
+def test_index_view_only_last_five_questions(client, question_generator):
     now = timezone.now()
 
     questions = []
     for i in range(0, 10):
-        questions.append(Question.objects.create(
+        questions.append(question_generator(
             question_text="Question {}".format(i), pub_date=now - timedelta(hours=i)
         ))
 
@@ -52,10 +50,10 @@ def test_index_view_only_last_five_questions(client, db):
     assert list(response.context_data['latest_question_list']) == questions[:5]
 
 
-def test_index_view_exclude_question_published_in_future(client, db):
+def test_index_view_exclude_question_published_in_future(client, question_generator):
     now = timezone.now()
-    question1 = Question.objects.create(question_text="Question 1", pub_date=now)
-    question2 = Question.objects.create(question_text="Question 2", pub_date=now + timedelta(hours=1))
+    question1 = question_generator(question_text="Question 1", pub_date=now)
+    question2 = question_generator(question_text="Question 2", pub_date=now + timedelta(hours=1))
 
     response = client.get(reverse('polls:index'))
     assert response.status_code == 200
@@ -67,9 +65,9 @@ def test_vote_question_not_found(client, db):
     assert response.status_code == 404
 
 
-def test_vote_question_found_no_choice(client, db):
+def test_vote_question_found_no_choice(client, question_generator):
     now = timezone.now()
-    question1 = Question.objects.create(question_text="Question 1", pub_date=now)
+    question1 = question_generator(question_text="Question 1", pub_date=now)
 
     response = client.post(reverse('polls:vote', kwargs={"question_id": question1.id}))
     assert response.status_code == 200
@@ -77,10 +75,10 @@ def test_vote_question_found_no_choice(client, db):
     assert escape("You didn't select a choice.") in force_text(response.content)
 
 
-def test_vote_question_found_with_choice(client, db):
+def test_vote_question_found_with_choice(client, question_generator, question_choice_generator):
     now = timezone.now()
-    question1 = Question.objects.create(question_text="Question 1", pub_date=now)
-    choice1 = Choice.objects.create(question=question1, choice_text="Choice 1", votes=0)
+    question1 = question_generator(question_text="Question 1", pub_date=now)
+    choice1 = question_choice_generator(question=question1, choice_text="Choice 1", votes=0)
 
     response = client.post(reverse('polls:vote', kwargs={"question_id": question1.id}),
                            data={"choice": choice1.id})
@@ -99,9 +97,9 @@ def test_detail_view_question_not_found(client, db):
     assert response.status_code == 404
 
 
-def test_detail_view_question_found(client, db):
+def test_detail_view_question_found(client, question_generator):
     now = timezone.now()
-    question1 = Question.objects.create(question_text="Question 1", pub_date=now)
+    question1 = question_generator(question_text="Question 1", pub_date=now)
 
     response = client.get(reverse('polls:detail', kwargs={"pk": question1.id}))
     assert response.status_code == 200
@@ -117,9 +115,9 @@ def test_results_view_question_not_found(client, db):
     assert response.status_code == 404
 
 
-def test_results_view_question_found(client, db):
+def test_results_view_question_found(client, question_generator):
     now = timezone.now()
-    question1 = Question.objects.create(question_text="Question 1", pub_date=now)
+    question1 = question_generator(question_text="Question 1", pub_date=now)
 
     response = client.get(reverse('polls:results', kwargs={"pk": question1.id}))
     assert response.status_code == 200
