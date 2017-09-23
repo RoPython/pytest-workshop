@@ -13,35 +13,32 @@ from polls.views import IndexView, vote, DetailView, ResultsView
 index_view = IndexView.as_view()
 
 
-def test_index_view_no_question(rf, db):
-    request = rf.get('/')
-    response = index_view(request)
+def test_index_view_no_question(client, db):
+    response = client.get(reverse('polls:index'))
     assert response.status_code == 200
     assert list(response.context_data['latest_question_list']) == []
 
 
-def test_index_view_one_question(rf, db):
+def test_index_view_one_question(client, db):
     now = timezone.now()
     question1 = Question.objects.create(question_text="Question 1", pub_date=now)
 
-    request = rf.get('/')
-    response = index_view(request)
+    response = client.get(reverse('polls:index'))
     assert response.status_code == 200
     assert list(response.context_data['latest_question_list']) == [question1]
 
 
-def test_index_view_two_questions(rf, db):
+def test_index_view_two_questions(client, db):
     now = timezone.now()
     question1 = Question.objects.create(question_text="Question 1", pub_date=now)
     question2 = Question.objects.create(question_text="Question 2", pub_date=now - timedelta(hours=1))
 
-    request = rf.get('/')
-    response = index_view(request)
+    response = client.get(reverse('polls:index'))
     assert response.status_code == 200
     assert list(response.context_data['latest_question_list']) == [question1, question2]
 
 
-def test_index_view_only_last_five_questions(rf, db):
+def test_index_view_only_last_five_questions(client, db):
     now = timezone.now()
 
     questions = []
@@ -50,48 +47,43 @@ def test_index_view_only_last_five_questions(rf, db):
             question_text="Question {}".format(i), pub_date=now - timedelta(hours=i)
         ))
 
-    request = rf.get('/')
-    response = index_view(request)
+    response = client.get(reverse('polls:index'))
     assert response.status_code == 200
     assert list(response.context_data['latest_question_list']) == questions[:5]
 
 
-def test_index_view_exclude_question_published_in_future(rf, db):
+def test_index_view_exclude_question_published_in_future(client, db):
     now = timezone.now()
     question1 = Question.objects.create(question_text="Question 1", pub_date=now)
     question2 = Question.objects.create(question_text="Question 2", pub_date=now + timedelta(hours=1))
 
-    request = rf.get('/')
-    response = index_view(request)
+    response = client.get(reverse('polls:index'))
     assert response.status_code == 200
     assert list(response.context_data['latest_question_list']) == [question1]
 
 
-def test_vote_question_not_found(rf, db):
-    request = rf.post('/999/vote')
-
-    with pytest.raises(Http404):
-        vote(request, 999)
+def test_vote_question_not_found(client, db):
+    response = client.get(reverse('polls:vote', kwargs={"question_id": 999}))
+    assert response.status_code == 404
 
 
-def test_vote_question_found_no_choice(rf, db):
+def test_vote_question_found_no_choice(client, db):
     now = timezone.now()
     question1 = Question.objects.create(question_text="Question 1", pub_date=now)
 
-    request = rf.post('{}/vote'.format(question1.id))
-    response = vote(request, question1.id)
+    response = client.post(reverse('polls:vote', kwargs={"question_id": question1.id}))
     assert response.status_code == 200
     assert question1.question_text in force_text(response.content)
     assert escape("You didn't select a choice.") in force_text(response.content)
 
 
-def test_vote_question_found_with_choice(rf, db):
+def test_vote_question_found_with_choice(client, db):
     now = timezone.now()
     question1 = Question.objects.create(question_text="Question 1", pub_date=now)
     choice1 = Choice.objects.create(question=question1, choice_text="Choice 1", votes=0)
 
-    request = rf.post('{}/vote'.format(question1.id), data={"choice": choice1.id})
-    response = vote(request, question1.id)
+    response = client.post(reverse('polls:vote', kwargs={"question_id": question1.id}),
+                           data={"choice": choice1.id})
     assert response.status_code == 302
     assert response.url == reverse('polls:results', args=(question1.id,))
 
@@ -102,20 +94,16 @@ def test_vote_question_found_with_choice(rf, db):
 detail_view = DetailView.as_view()
 
 
-def test_detail_view_question_not_found(rf, db):
-    request = rf.get('/999/')
-
-    with pytest.raises(Http404):
-        detail_view(request, pk=999)
+def test_detail_view_question_not_found(client, db):
+    response = client.get(reverse('polls:detail', kwargs={"pk": 999}))
+    assert response.status_code == 404
 
 
-def test_detail_view_question_found(rf, db):
+def test_detail_view_question_found(client, db):
     now = timezone.now()
     question1 = Question.objects.create(question_text="Question 1", pub_date=now)
 
-    request = rf.get('/{}/'.format(question1.id))
-
-    response = detail_view(request, pk=question1.id)
+    response = client.get(reverse('polls:detail', kwargs={"pk": question1.id}))
     assert response.status_code == 200
     assert response.context_data['object'] == question1
     assert 'polls/detail.html' in response.template_name
@@ -124,20 +112,16 @@ def test_detail_view_question_found(rf, db):
 results_view = ResultsView.as_view()
 
 
-def test_results_view_question_not_found(rf, db):
-    request = rf.get('/999/results')
-
-    with pytest.raises(Http404):
-        results_view(request, pk=999)
+def test_results_view_question_not_found(client, db):
+    response = client.get(reverse('polls:results', kwargs={"pk": 999}))
+    assert response.status_code == 404
 
 
-def test_results_view_question_found(rf, db):
+def test_results_view_question_found(client, db):
     now = timezone.now()
     question1 = Question.objects.create(question_text="Question 1", pub_date=now)
 
-    request = rf.get('/{}/results'.format(question1.id))
-
-    response = results_view(request, pk=question1.id)
+    response = client.get(reverse('polls:results', kwargs={"pk": question1.id}))
     assert response.status_code == 200
     assert response.context_data['object'] == question1
     assert 'polls/results.html' in response.template_name
