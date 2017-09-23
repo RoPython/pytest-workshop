@@ -8,7 +8,7 @@ from django.utils.encoding import force_text
 from django.utils.html import escape
 
 from polls.models import Question, Choice
-from polls.views import IndexView, vote
+from polls.views import IndexView, vote, DetailView
 
 index_view = IndexView.as_view()
 
@@ -97,3 +97,25 @@ def test_vote_question_found_with_choice(rf, db):
 
     choice1.refresh_from_db()
     assert choice1.votes == 1
+
+
+detail_view = DetailView.as_view()
+
+
+def test_detail_view_question_not_found(rf, db):
+    request = rf.get('/999/')
+
+    with pytest.raises(Http404):
+        detail_view(request, pk=999)
+
+
+def test_detail_view_question_found(rf, db):
+    now = timezone.now()
+    question1 = Question.objects.create(question_text="Question 1", pub_date=now)
+
+    request = rf.get('/{}/'.format(question1.id))
+
+    response = detail_view(request, pk=question1.id)
+    assert response.status_code == 200
+    assert response.context_data['object'] == question1
+    assert 'polls/detail.html' in response.template_name
