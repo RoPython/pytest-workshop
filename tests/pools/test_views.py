@@ -5,11 +5,6 @@ from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.html import escape
 
-from polls.models import Question, Choice
-from polls.views import IndexView, vote, DetailView, ResultsView
-
-index_view = IndexView.as_view()
-
 
 def test_index_view_no_question(client, db):
     response = client.get(reverse('polls:index'))
@@ -17,13 +12,10 @@ def test_index_view_no_question(client, db):
     assert list(response.context_data['latest_question_list']) == []
 
 
-def test_index_view_one_question(client, question_generator):
-    now = timezone.now()
-    question1 = question_generator(question_text="Question 1", pub_date=now)
-
+def test_index_view_one_question(client, question):
     response = client.get(reverse('polls:index'))
     assert response.status_code == 200
-    assert list(response.context_data['latest_question_list']) == [question1]
+    assert list(response.context_data['latest_question_list']) == [question]
 
 
 def test_index_view_two_questions(client, question_generator):
@@ -38,12 +30,8 @@ def test_index_view_two_questions(client, question_generator):
 
 def test_index_view_only_last_five_questions(client, question_generator):
     now = timezone.now()
-
-    questions = []
-    for i in range(0, 10):
-        questions.append(question_generator(
-            question_text="Question {}".format(i), pub_date=now - timedelta(hours=i)
-        ))
+    questions = [question_generator(question_text="Question {}".format(i), pub_date=now - timedelta(hours=i))
+                 for i in range(0, 10)]
 
     response = client.get(reverse('polls:index'))
     assert response.status_code == 200
@@ -65,31 +53,23 @@ def test_vote_question_not_found(client, db):
     assert response.status_code == 404
 
 
-def test_vote_question_found_no_choice(client, question_generator):
-    now = timezone.now()
-    question1 = question_generator(question_text="Question 1", pub_date=now)
-
-    response = client.post(reverse('polls:vote', kwargs={"question_id": question1.id}))
+def test_vote_question_found_no_choice(client, question):
+    response = client.post(reverse('polls:vote', kwargs={"question_id": question.id}))
     assert response.status_code == 200
-    assert question1.question_text in force_text(response.content)
+    assert question.question_text in force_text(response.content)
     assert escape("You didn't select a choice.") in force_text(response.content)
 
 
-def test_vote_question_found_with_choice(client, question_generator, question_choice_generator):
-    now = timezone.now()
-    question1 = question_generator(question_text="Question 1", pub_date=now)
-    choice1 = question_choice_generator(question=question1, choice_text="Choice 1", votes=0)
+def test_vote_question_found_with_choice(client, question, question_choice_generator):
+    choice1 = question_choice_generator(question=question, choice_text="Choice 1", votes=0)
 
-    response = client.post(reverse('polls:vote', kwargs={"question_id": question1.id}),
+    response = client.post(reverse('polls:vote', kwargs={"question_id": question.id}),
                            data={"choice": choice1.id})
     assert response.status_code == 302
-    assert response.url == reverse('polls:results', args=(question1.id,))
+    assert response.url == reverse('polls:results', args=(question.id,))
 
     choice1.refresh_from_db()
     assert choice1.votes == 1
-
-
-detail_view = DetailView.as_view()
 
 
 def test_detail_view_question_not_found(client, db):
@@ -97,17 +77,11 @@ def test_detail_view_question_not_found(client, db):
     assert response.status_code == 404
 
 
-def test_detail_view_question_found(client, question_generator):
-    now = timezone.now()
-    question1 = question_generator(question_text="Question 1", pub_date=now)
-
-    response = client.get(reverse('polls:detail', kwargs={"pk": question1.id}))
+def test_detail_view_question_found(client, question):
+    response = client.get(reverse('polls:detail', kwargs={"pk": question.id}))
     assert response.status_code == 200
-    assert response.context_data['object'] == question1
+    assert response.context_data['object'] == question
     assert 'polls/detail.html' in response.template_name
-
-
-results_view = ResultsView.as_view()
 
 
 def test_results_view_question_not_found(client, db):
@@ -115,11 +89,8 @@ def test_results_view_question_not_found(client, db):
     assert response.status_code == 404
 
 
-def test_results_view_question_found(client, question_generator):
-    now = timezone.now()
-    question1 = question_generator(question_text="Question 1", pub_date=now)
-
-    response = client.get(reverse('polls:results', kwargs={"pk": question1.id}))
+def test_results_view_question_found(client, question):
+    response = client.get(reverse('polls:results', kwargs={"pk": question.id}))
     assert response.status_code == 200
-    assert response.context_data['object'] == question1
+    assert response.context_data['object'] == question
     assert 'polls/results.html' in response.template_name
