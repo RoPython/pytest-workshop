@@ -1,0 +1,5 @@
+graft src
+graft tests
+
+include tox.ini
+global-exclude *.py[cod] __pycache__ *.so *.dylib
