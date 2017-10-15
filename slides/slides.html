@@ -36,11 +36,11 @@ p, body, header {
     margin: 0;
 }
 
-div.slide {
+.slide {
     position: absolute;
     overflow: hidden;
-    width: 1024px;
-    height: 768px;
+    width: 1000px;
+    height: 750px;
     border-radius: 20px;
     -moz-border-radius: 20px;
     -webkit-border-radius: 20px;
@@ -53,7 +53,7 @@ p.hr {
     border-bottom: 1px solid #fdf6e3;
 }
 header:not(:only-child) {
-    font-size: 60px;
+    font-size: 58px;
     position: absolute;
     left: 30px;
     top: 25px;
@@ -86,11 +86,12 @@ section, .slide header:only-child h1 {
     overflow: hidden;
 }
 section {
+    font-size: 32px;
     position: absolute;
     margin: 0;
     left: 30px;
     right: 30px;
-    top: 135px;
+    top: 110px;
     bottom: 30px;
     overflow: auto;
     display: flex;
@@ -126,7 +127,7 @@ pre, code, tt {
     font-family: Consolas, 'Bitstream Vera Sans Mono', 'Lucida Console', FreeMono, Courier, monospace;
 }
 pre, .gist .gist-file .gist-data {
-    font-size: 24px;
+    font-size: 22px;
     max-height: 485px;
     padding: 0 0.5em !important;
     margin: 0;
@@ -143,8 +144,8 @@ li pre {
     text-align: center;
     display: table-cell;
     vertical-align: middle;
-    height: 768px;
-    width: 1024px;
+    height: 750px;
+    width: 1000px;
     font-size: 68px;
     margin-top: 100px;
     margin-bottom: 100px;
@@ -163,7 +164,7 @@ aside.page_number {
     right: 10px;
     text-indent: 10px;
 }
-div.slide p.notes {
+.slide p.notes {
     font-size: 90%;
 }
 img {
@@ -242,9 +243,20 @@ div.slide-wrapper:last-of-type .slide {
     width: 100%;
     height: 100%;
 }
-div.presentation,
-body.presenter_view div#current_presenter_notes section,
-div.slides, body.expose div.slides.nocontext, .presenter_notes {
+.slides .slide {
+    opacity: 0;
+}
+.presenter_view .slide,
+.expose .slide,
+.slide.current,
+.show_next .slide.next {
+    opacity: 1;
+}
+.presentation,
+.presenter_view #current_presenter_notes section,
+.slides,
+.expose .slides,
+.presenter_notes {
     top: 0;
     left: 0;
     right: 0;
@@ -253,43 +265,43 @@ div.slides, body.expose div.slides.nocontext, .presenter_notes {
     display: block;
     background: inherit;
 }
-div.slides.nocontext .slide {
-    opacity: 0;
-}
-div.slides.nocontext .slide.future {
-}
-body.expose div.slides.nocontext .slide,
-div.slides.nocontext .slide.current {
-    opacity: 1;
-}
-div.slide {
+.slide {
     display: none;
     left: 50%;
     top: 50%;
-    margin-top: -384px;
+    margin-top: -375px;
+    margin-left: -500px;
     -webkit-transition: margin 0.3s ease-in, opacity 0.3s ease-in;
     -moz-transition: margin 0.3s ease-in, opacity 0.3s ease-in;
     -o-transition: margin 0.3s ease-in, opacity 0.3s ease-in;
 }
-.slide.far-past {
+.slide.current,
+.slide.prev,
+.slide.next,
+.slide.after_next {
     display: block;
-    margin-left: -2660px;
 }
-.slide.past {
-    display: block;
-    margin-left: -1586px;
+.slide.prev {
+    margin-left: -1510px;
 }
-.slide.current {
-    display: block;
-    margin-left: -512px;
+.slide.next {
+    margin-left: 510px;
 }
-.slide.future {
-    display: block;
-    margin-left: 562px;
+.slide.after_next {
+    margin-left: 1520px;
 }
-.slide.far-future {
-    display: block;
-    margin-left: 1636px;
+
+.show_next .slide.prev {
+    margin-left: -2015px;
+}
+.show_next .slide.current {
+    margin-left: -1005px;
+}
+.show_next .slide.next {
+    margin-left: 5px;
+}
+.show_next .slide.after_next {
+    margin-left: 1015px;
 }
 /* Content */
 
@@ -381,13 +393,10 @@ div.slide {
 }
 
 /* Expose */
-body.expose div.slides {
-    float: left;
-    position: relative;
+.expose .slides {
     overflow: auto;
-    margin-bottom: 10px;
 }
-body.expose div.slide {
+.expose .slide {
     display: block;
     float: left;
     position: relative;
@@ -408,26 +417,24 @@ body.expose div.slide {
     -o-transition: none;
     cursor: pointer;
 }
-body.expose .slide-wrapper {
+.expose .slide-wrapper {
     float: left;
     position: relative;
     margin: 2%;
     width: 300px;
     height: 233px;
 }
-body.expose .slide footer {
+.expose .slide footer {
 }
-body.expose .slide .inner {
+.expose .slide .inner {
 }
-body.expose .slide.far-past,
-body.expose .slide.past,
-body.expose .slide.future,
-body.expose .slide.far-future {
+.expose .slide.next,
+.expose .slide.after_next {
     margin-left: 0;
 }
 /* Presenter Mode */
 
-body.presenter_view div.slide {
+.presenter_view .slide {
     display: inline;
     position: absolute;
     overflow: hidden;
@@ -437,36 +444,31 @@ body.presenter_view div.slide {
     -webkit-transform-origin: 0 0;
     -o-transform: scale(.5, .5);
     -o-transform-origin: 0 0;
-    margin-top: -384px;
+    margin-top: -375px;
 }
-body.presenter_view .slide.far-past {
+.presenter_view .slide.prev {
     display: block;
-    margin-left: -1594px;
+    margin-left: -1015px;
 }
-body.presenter_view .slide.past {
+.presenter_view .slide.current {
     display: block;
-    margin-left: -1049px;
-}
-body.presenter_view .slide.current {
-    display: block;
-    margin-left: -512px;
-    xborder: 8px solid maroon;
-    box-shadow: 0 0 0 15px #dc322f;
+    margin-left: -500px;
+    box-shadow: 0 0 0 15px maroon;
     z-index: 2;
 }
-body.presenter_view .slide.future {
+.presenter_view .slide.next {
     display: block;
-    margin-left: 25px;
+    margin-left: 15px;
     z-index: 1;
 }
-body.presenter_view .slide.far-future {
+.presenter_view .slide.after_next {
     display: block;
-    margin-left: 562px;
+    margin-left: 525px;
 }
-body.presenter_view .slide.none {
+.presenter_view .slide.none {
     display: none;
 }
-body.presenter_view div#current_presenter_notes {
+.presenter_view #current_presenter_notes {
     visibility: visible;
     display: block;
     position: fixed;
@@ -482,23 +484,23 @@ body.presenter_view div#current_presenter_notes {
     border-radius: 10px;
     margin-bottom: 20px;
 }
-body.presenter_view div#current_presenter_notes section {
+.presenter_view #current_presenter_notes section {
     display: block;
     overflow: visible;
     margin: 60px 30px 0 30px;
-    font-size: 24px;
+    font-size: 22px;
 }
-body.presenter_view div#current_presenter_notes section p {
+.presenter_view #current_presenter_notes section p {
     margin: 0;
 }
-body.presenter_view div#current_presenter_notes h1 {
+.presenter_view #current_presenter_notes h1 {
     font-size: 50%;
     display: block;
 }
-div#current_presenter_notes {
+#current_presenter_notes {
     display: none;
 }
-div.slide div.presenter_notes {
+.slide .presenter_notes {
     display: none;
 }
 #blank {
@@ -523,7 +525,7 @@ body, header {
     font-family: 'Candara', 'Calibri', 'Segoe UI Semilight', 'Corbel', 'Trebuchet Ms', 'Segoe UI', sans-serif;
 }
 section {
-    font: 34px 'Palatino', 'Palatino Linotype', 'URW Palladio L', 'Century Schoolbook L', 'Georgia', serif;
+    font-family: 'Palatino', 'Palatino Linotype', 'URW Palladio L', 'Century Schoolbook L', 'Georgia', serif;
 }
 
 /* ======================================
@@ -676,12 +678,13 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
     // Since we don't have the fallback of attachEvent and
     // other IE only stuff we won't try to run JS for IE.
     // It will run though when using Google Chrome Frame
-    if (document.all) { return; }
+    if (document.all) {
+        return;
+    }
 
     var currentSlideNo;
     var notesOn = false;
-    var expanded = false;
-    var hiddenContext = false;
+    var hiddenNext = false;
     var blanked = false;
     var slides = document.getElementsByClassName('slide');
     var touchStartX = 0;
@@ -695,7 +698,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
     var presenterViewWin = null;
     var isPresenterView = false;
 
-    var str2array = function(s) {
+    var str2array = function (s) {
         if (typeof s == 'string' || s instanceof String) {
             if (s.indexOf(' ') < 0) {
                 a1[0] = s;
@@ -707,11 +710,11 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         return s;
     };
 
-    var trim = function(str) {
+    var trim = function (str) {
         return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     };
 
-    var addClass = function(node, classStr) {
+    var addClass = function (node, classStr) {
         classStr = str2array(classStr);
         var cls = ' ' + node.className + ' ';
         for (var i = 0, len = classStr.length, c; i < len; ++i) {
@@ -723,7 +726,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         node.className = trim(cls);
     };
 
-    var removeClass = function(node, classStr) {
+    var removeClass = function (node, classStr) {
         var cls;
         if (!node) {
             throw 'no node provided';
@@ -743,7 +746,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         }
     };
 
-    var getSlideEl = function(slideNo) {
+    var getSlideEl = function (slideNo) {
         if (slideNo > 0) {
             return slides[slideNo - 1];
         } else {
@@ -751,7 +754,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         }
     };
 
-    var getSlideTitle = function(slideNo) {
+    var getSlideTitle = function (slideNo) {
         var el = getSlideEl(slideNo);
         if (el) {
             var headers = el.getElementsByTagName('header');
@@ -762,7 +765,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         return null;
     };
 
-    var getSlidePresenterNote = function(slideNo) {
+    var getSlidePresenterNote = function (slideNo) {
         var el = getSlideEl(slideNo);
         if (el) {
             var n = el.getElementsByClassName('presenter_notes');
@@ -773,29 +776,23 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         return null;
     };
 
-    var changeSlideElClass = function(slideNo, className) {
+    var changeSlideElClass = function (slideNo, className) {
         var el = getSlideEl(slideNo);
         if (el) {
-            removeClass(el, 'far-past past current future far-future none');
+            removeClass(el, 'prev current next after_next none');
             addClass(el, className);
         }
     };
 
-    var updateSlideClasses = function(updateOther) {
+    var updateSlideClasses = function (updateOther) {
         window.location.hash = (isPresenterView ? "presenter:" : "slide:") + currentSlideNo;
 
-        for (var i=1; i<currentSlideNo-1; i++) {
-            changeSlideElClass(i, 'far-past');
-        }
-
-        changeSlideElClass(currentSlideNo - 1, 'past');
+        for (i = 1; i < currentSlideNo + 1; i++) changeSlideElClass(i, 'none');
+        changeSlideElClass(currentSlideNo - 1, 'prev');
         changeSlideElClass(currentSlideNo, 'current');
-        changeSlideElClass(currentSlideNo + 1, 'future');
-        changeSlideElClass(currentSlideNo + 2, 'far-future');
-
-        for (i=currentSlideNo+3; i<slides.length+1; i++) {
-            changeSlideElClass(i, 'none');
-        }
+        changeSlideElClass(currentSlideNo + 1, 'next');
+        changeSlideElClass(currentSlideNo + 2, 'after_next');
+        for (i = currentSlideNo + 3; i < slides.length + 1; i++)  changeSlideElClass(i, 'none');
 
         highlightCurrentTocLink();
 
@@ -803,11 +800,15 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
 
         updatePresenterNotes();
 
-        if (updateOther) { updateOtherPage(); }
+        if (updateOther) {
+            updateOtherPage();
+        }
     };
 
-    var updatePresenterNotes = function() {
-        if (!isPresenterView) { return; }
+    var updatePresenterNotes = function () {
+        if (!isPresenterView) {
+            return;
+        }
 
         var existingNote = document.getElementById('current_presenter_notes');
         var currentNote = getSlidePresenterNote(currentSlideNo).cloneNode(true);
@@ -816,12 +817,12 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         existingNote.replaceChild(currentNote, document.getElementById('presenter_note'));
     };
 
-    var highlightCurrentTocLink = function() {
+    var highlightCurrentTocLink = function () {
         var toc = document.getElementById('toc');
 
         if (toc) {
             var tocRows = toc.getElementsByTagName('tr');
-            for (var i=0; i<tocRows.length; i++) {
+            for (var i = 0; i < tocRows.length; i++) {
                 removeClass(tocRows.item(i), 'active');
             }
 
@@ -832,32 +833,44 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         }
     };
 
-    var updateOtherPage = function() {
-        if (!showingPresenterView) { return; }
+    var updateOtherPage = function () {
+        if (!showingPresenterView) {
+            return;
+        }
 
         var w = isPresenterView ? window.opener : presenterViewWin;
-        w.postMessage('slide#' + currentSlideNo, '*');
+        if (w) w.postMessage('slide#' + currentSlideNo, '*');
     };
 
-    var nextSlide = function() {
+    var nextSlide = function () {
         if (currentSlideNo < slides.length) {
             currentSlideNo++;
         }
         updateSlideClasses(true);
     };
 
-    var prevSlide = function() {
+    var prevSlide = function () {
         if (currentSlideNo > 1) {
             currentSlideNo--;
         }
         updateSlideClasses(true);
     };
 
-    var showNotes = function() {
+    var firstSlide = function () {
+        currentSlideNo = 1;
+        updateSlideClasses(true);
+    };
+
+    var lastSlide = function () {
+        currentSlideNo = slides.length;
+        updateSlideClasses(true);
+    };
+
+    var showNotes = function () {
         var slide = getSlideEl(currentSlideNo),
             notes = slide.getElementsByClassName('presenter_notes');
         for (var i = 0, len = notes.length; i < len; i++) {
-            notes.item(i).style.display = (notesOn) ? 'none':'block';
+            notes.item(i).style.display = (notesOn) ? 'none' : 'block';
         }
         notesOn = !notesOn;
         if (notesOn) {
@@ -867,7 +880,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         }
     };
 
-    var showSlideNumbers = function() {
+    var showSlideNumbers = function () {
         var asides = document.getElementsByClassName('page_number');
         var hidden = asides[0].style.display != 'block';
         for (var i = 0; i < asides.length; i++) {
@@ -875,7 +888,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         }
     };
 
-    var showSlideSources = function() {
+    var showSlideSources = function () {
         var asides = document.getElementsByClassName('source');
         var hidden = asides[0].style.display != 'block';
         for (var i = 0; i < asides.length; i++) {
@@ -883,9 +896,9 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         }
     };
 
-    var showToc = function() {
+    var showToc = function () {
         if (helpOpened) {
-                showHelp();
+            showHelp();
         }
         var toc = document.getElementById('toc');
         if (toc) {
@@ -895,9 +908,9 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         updateOverview();
     };
 
-    var showHelp = function() {
+    var showHelp = function () {
         if (tocOpened) {
-                showToc();
+            showToc();
         }
 
         var help = document.getElementById('help');
@@ -908,8 +921,10 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         }
     };
 
-    var showPresenterView = function() {
-        if (isPresenterView) { return; }
+    var showPresenterView = function () {
+        if (isPresenterView) {
+            return;
+        }
 
         if (showingPresenterView) {
             if (presenterViewWin)
@@ -918,27 +933,39 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
             showingPresenterView = false;
         } else {
             presenterViewWin = open(window.location.pathname + "#presenter:" + currentSlideNo, 'presenter_notes',
-                                    'directories=no,location=no,toolbar=no,menubar=no,copyhistory=no');
+                'directories=no,location=no,toolbar=no,menubar=no,copyhistory=no');
             showingPresenterView = true;
         }
     };
 
-    var toggleOverview = function() {
+    var toggleOverview = function () {
+        if (helpOpened) {
+            showHelp();
+            return
+        }
+        if (tocOpened) {
+            showToc();
+            return;
+        }
         if (!overviewActive) {
             addClass(document.body, 'expose');
             overviewActive = true;
+            setTimeout(function() {
+                try {
+                    document.querySelector('.slide.current').parentElement.scrollIntoView(true);
+                } catch (e) {
+                }
+            });
             setScale(1);
         } else {
             removeClass(document.body, 'expose');
             overviewActive = false;
-            if (expanded) {
-                setScale(scale);    // restore scale
-            }
+            setScale();
         }
         updateOverview();
     };
 
-    var updateOverview = function() {
+    var updateOverview = function () {
         try {
             var presentation = document.getElementsByClassName('presentation')[0];
         } catch (e) {
@@ -965,16 +992,16 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         }
     };
 
-    var computeScale = function() {
+    var computeScale = function () {
         var cSlide = document.getElementsByClassName('current')[0];
-        var sx = (cSlide.clientWidth + 20) / window.innerWidth;
+        var sx = (cSlide.clientWidth + 20) * (hiddenNext ? 2 : 1) / window.innerWidth;
         var sy = (cSlide.clientHeight + 20) / window.innerHeight;
         return 1 / Math.max(sy, sx);
     };
 
-    var setScale = function(scale) {
+    var setScale = function (scale) {
         var presentation = document.getElementsByClassName('slides')[0];
-        var transform = 'scale(' + scale + ')';
+        var transform = 'scale(' + (scale || computeScale()) + ')';
         presentation.style.MozTransform = transform;
         presentation.style.WebkitTransform = transform;
         presentation.style.OTransform = transform;
@@ -982,47 +1009,32 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         presentation.style.transform = transform;
     };
 
-    var expandSlides = function() {
-        if (overviewActive) {
+    var showNext = function () {
+        var presentation = document.getElementsByClassName('slides')[0];
+        addClass(presentation, 'show_next');
+        hiddenNext = true;
+        setScale();
+    };
+
+    var hideNext = function () {
+        if (isPresenterView) {
             return;
         }
-        if (expanded) {
-            setScale(1);
-            showContext();
-            expanded = false;
-        } else {
-            setExpanded();
-        }
-    };
-    var setExpanded = function() {
-        scale = computeScale();
-        setScale(scale);
-        expanded = true;
-        hideContext();
-    };
-
-    var showContext = function() {
         var presentation = document.getElementsByClassName('slides')[0];
-        removeClass(presentation, 'nocontext');
-        hiddenContext = true;
+        removeClass(presentation, 'show_next');
+        hiddenNext = false;
+        setScale();
     };
 
-    var hideContext = function() {
-        if (isPresenterView) { return; }
-        var presentation = document.getElementsByClassName('slides')[0];
-        addClass(presentation, 'nocontext');
-        hiddenContext = false;
-    };
-
-    var toggleContext = function() {
-        if (hiddenContext) {
-            hideContext();
+    var toggleNext = function () {
+        if (hiddenNext) {
+            hideNext();
         } else {
-            showContext();
+            showNext();
         }
     };
 
-    var toggleBlank = function() {
+    var toggleBlank = function () {
         blank_elem = document.getElementById('blank');
 
         blank_elem.style.display = blanked ? 'none' : 'block';
@@ -1030,7 +1042,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         blanked = !blanked;
     };
 
-    var isModifierKey = function(keyCode) {
+    var isModifierKey = function (keyCode) {
         switch (keyCode) {
             case 16: // shift
             case 17: // ctrl
@@ -1044,24 +1056,19 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         }
     };
 
-    var checkModifierKeyUp = function(event) {
+    var checkModifierKeyUp = function (event) {
         if (isModifierKey(event.keyCode)) {
             modifierKeyDown = false;
         }
     };
 
-    var checkModifierKeyDown = function(event) {
+    var checkModifierKeyDown = function (event) {
         if (isModifierKey(event.keyCode)) {
             modifierKeyDown = true;
         }
     };
 
-    var handleBodyKeyDown = function(event) {
-        if (modifierKeyDown && event.keyCode == 80) {
-            setScale(1);
-            showContext();
-            expanded = false;
-        }
+    var handleBodyKeyDown = function (event) {
         if (modifierKeyDown) {
             return
         }
@@ -1085,6 +1092,12 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
                 event.preventDefault();
                 nextSlide();
                 break;
+            case 35: // end
+                lastSlide();
+                break;
+            case 36: // home
+                firstSlide();
+                break;
             case 50: // 2
                 showNotes();
                 break;
@@ -1097,12 +1110,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
                 break;
             case 67: // c
                 if (!overviewActive) {
-                    toggleContext();
-                }
-                break;
-            case 69: // e
-                if (!overviewActive) {
-                    expandSlides();
+                    toggleNext();
                 }
                 break;
             case 72: // h
@@ -1129,7 +1137,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         }
     };
 
-    var handleWheel = function(event) {
+    var handleWheel = function (event) {
         if (tocOpened || helpOpened || overviewActive) {
             return;
         }
@@ -1141,24 +1149,24 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         }
 
         if (event.wheelDelta) {
-            delta = event.wheelDelta/120;
+            delta = event.wheelDelta / 120;
             if (window.opera) delta = -delta;
         } else if (event.detail) {
-            delta = -event.detail/3;
+            delta = -event.detail / 3;
         }
 
-        if (delta && delta <0) {
+        if (delta && delta < 0) {
             nextSlide();
         } else if (delta) {
             prevSlide();
         }
     };
 
-    var addSlideClickListeners = function() {
-        for (var i=0; i < slides.length; i++) {
+    var addSlideClickListeners = function () {
+        for (var i = 0; i < slides.length; i++) {
             var slide = slides.item(i);
             slide.num = i + 1;
-            slide.addEventListener('click', function(e) {
+            slide.addEventListener('click', function (e) {
                 if (overviewActive) {
                     currentSlideNo = this.num;
                     toggleOverview();
@@ -1170,37 +1178,37 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         }
     };
 
-    var addRemoteWindowControls = function() {
-        window.addEventListener("message", function(e) {
+    var addRemoteWindowControls = function () {
+        window.addEventListener("message", function (e) {
             if (e.data.indexOf("slide#") != -1) {
-                    currentSlideNo = Number(e.data.replace('slide#', ''));
-                    updateSlideClasses(false);
+                currentSlideNo = Number(e.data.replace('slide#', ''));
+                updateSlideClasses(false);
             }
         }, false);
     };
 
-    var addTouchListeners = function() {
-        document.addEventListener('touchstart', function(e) {
+    var addTouchListeners = function () {
+        document.addEventListener('touchstart', function (e) {
             touchStartX = e.touches[0].pageX;
         }, false);
-        document.addEventListener('touchend', function(e) {
+        document.addEventListener('touchend', function (e) {
             var pixelsMoved = touchStartX - e.changedTouches[0].pageX;
             var SWIPE_SIZE = 150;
             if (pixelsMoved > SWIPE_SIZE) {
                 nextSlide();
             }
             else if (pixelsMoved < -SWIPE_SIZE) {
-             prevSlide();
+                prevSlide();
             }
         }, false);
     };
 
-    var addTocLinksListeners = function() {
+    var addTocLinksListeners = function () {
         var toc = document.getElementById('toc');
         if (toc) {
             var tocLinks = toc.getElementsByTagName('a');
-            for (var i=0; i < tocLinks.length; i++) {
-                tocLinks.item(i).addEventListener('click', function(e) {
+            for (var i = 0; i < tocLinks.length; i++) {
+                tocLinks.item(i).addEventListener('click', function (e) {
                     currentSlideNo = Number(this.attributes['href'].value.replace('#slide:', ''));
                     updateSlideClasses(true);
                     e.preventDefault();
@@ -1208,10 +1216,9 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
             }
         }
     };
-
     // initialize
 
-    (function() {
+    (function () {
         if (window.location.hash == "") {
             currentSlideNo = 1;
         } else if (window.location.hash.indexOf("#presenter:") != -1) {
@@ -1227,12 +1234,12 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         document.addEventListener('keyup', checkModifierKeyUp);
         document.addEventListener('keydown', handleBodyKeyDown);
         document.addEventListener('keydown', checkModifierKeyDown);
-        document.addEventListener('visibilitychange', function(event) {
+        document.addEventListener('visibilitychange', function (event) {
             if (document.hidden) {
                 modifierKeyDown = false;
             }
         }, false);
-        setInterval(function() {
+        setInterval(function () {
             if (!document.hasFocus()) {
                 modifierKeyDown = false;
             }
@@ -1240,13 +1247,16 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
 
         window.addEventListener("mousewheel", handleWheel);
         window.addEventListener("DOMMouseScroll", handleWheel);
-        window.addEventListener("DOMContentLoaded", expandSlides);
-        window.onresize = function(){
-            setScale(!overviewActive && expanded ? scale = computeScale() : 1);
+        window.addEventListener("DOMContentLoaded", function () {
+            setScale();
+            hideNext();
+        });
+        window.onresize = function () {
+            setScale();
         }
 
         for (var i = 0, el; el = slides[i]; i++) {
-            addClass(el, 'slide far-future');
+            addClass(el, 'slide');
         }
         updateSlideClasses(false);
 
@@ -1297,7 +1307,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
             </aside>
             
             <aside class="page_number">
-              1/3
+              1/22
             </aside>
           </footer>
         </div>
@@ -1312,16 +1322,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
             
             
             <section><p class="center">Ionel Cristian Mărieș</p>
-<p class="center">Gabriel Muj</p>
-
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-
-<p class="small center">Based on content kindly provided by Holger Krekel and Florian Bruhin.</p></section>
+<p class="center">Gabriel Muj ← actual teacher</p></section>
             
           </div>
           <div class="presenter_notes">
@@ -1340,7 +1341,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
             </aside>
             
             <aside class="page_number">
-              2/3
+              2/22
             </aside>
           </footer>
         </div>
@@ -1356,7 +1357,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
             
             <section><ul class="simple">
 <li>preparation &amp; setting up tox/virtualenv/django/pytest</li>
-<li>writting tests for django app (the tutorial polls app) while demonstrating<ul class="smaller">
+<li>writing tests for django app (the tutorial polls app) while demonstrating<ul class="smaller">
 <li>test discovery</li>
 <li>classes vs function tests</li>
 <li>assertion helpers</li>
@@ -1386,7 +1387,935 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
             </aside>
             
             <aside class="page_number">
-              3/3
+              3/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-4">
+          <div class="inner">
+            
+            <header><h1>Tests</h1></header>
+            
+            
+            <section><p>Some background:</p>
+<ul>
+<li><p class="first">Django comes with own testing system, but it turns out <tt class="docutils literal">unittest.TestCase</tt> ain't so good (in general).</p>
+</li>
+<li><p class="first">There are three alternatives:</p>
+<ul class="simple">
+<li>Nose (unmaintained)</li>
+<li>Nose2 (unusable, it's missing almost all the Nose plugins)</li>
+<li>Pytest</li>
+</ul>
+<p>Note that Nose is a fork of Pytest 0.8 (ancient)</p>
+</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              4/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-5">
+          <div class="inner">
+            
+            <header><h1>Key features of pytest</h1></header>
+            
+            
+            <section><p>Different way of test setup:</p>
+<ul class="simple">
+<li>Unittest uses setup/teardown methods. Inevitably that leads to multiple inheritance and mixins.</li>
+<li>Pytest uses composability and DI (dependency injection)</li>
+</ul>
+<p>Different way of doing assertions:</p>
+<ul class="simple">
+<li>Unittest uses assertion methods. An army of <tt class="docutils literal">assertThis</tt> and <tt class="docutils literal">assertThat</tt>.</li>
+<li>Pytest uses simple assertions.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              5/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-6">
+          <div class="inner">
+            
+            <header><h1>Key features of pytest</h1></header>
+            
+            
+            <section><p>Different way of customizing behavior:</p>
+<ul class="simple">
+<li>Unittest makes it hard to customize collection, output and other handling. You end up subclassing and monkeypatching things.</li>
+<li>Pytest gives you hooks to customize almost anything. And it has builtin support for markers, selection, parametrization etc.</li>
+</ul>
+<p>Note: there is some support for <tt class="docutils literal">unittest.TestCase</tt> in pytest.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              6/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-7">
+          <div class="inner">
+            
+            <header><h1>Pytest basics</h1></header>
+            
+            
+            <section><p>Install it:</p>
+<pre class="literal-block">
+$ pip install pytest
+</pre>
+<p>Make a <tt class="docutils literal">tests\test_example.py</tt>:</p>
+<pre><span></span><span class="k">def</span> <span class="nf">test_simple</span><span class="p">():</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">assert</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">3</span>
+    <span class="k">assert</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">4</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              7/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-8">
+          <div class="inner">
+            
+            <header><h1>Pytest basics</h1></header>
+            
+            
+            <section><pre class="literal-block">
+$ pytest tests/
+========================= test session starts ==========================
+platform linux -- Python 3.6.2, pytest-3.2.2, py-1.4.34, pluggy-0.4.0 --
+plugins: django-3.1.2
+collected 1 item
+
+tests/test_example.py F
+=============================== FAILURES ===============================
+_____________________________ test_simple ______________________________
+
+    def test_simple():
+        a = 1
+        b = 2
+        assert a + b == 3
+&gt;       assert a + b == 4
+E       assert (1 + 2) == 4
+
+tests/test_example.py:5: AssertionError
+======================= 1 failed in 0.05 seconds =======================
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              8/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-9">
+          <div class="inner">
+            
+            <header><h1>Pytest basics</h1></header>
+            
+            
+            <section><p>Useful option and defaults, use <tt class="docutils literal">pytest.ini</tt> for them:</p>
+<pre><span></span><span class="k">[pytest]</span>
+<span class="c1">; now we can just run `pytest` instead of `pytest tests/`</span>
+<span class="na">testpaths</span> <span class="o">=</span> <span class="s">tests</span>
+
+<span class="c1">; note that `test_*.py` and `*_test.py` are defaults</span>
+<span class="na">python_files</span> <span class="o">=</span><span class="s"></span>
+<span class="s">    test_*.py</span>
+<span class="s">    *_test.py</span>
+<span class="s">    tests.py</span>
+<span class="na">addopts</span> <span class="o">=</span>
+<span class="c1">; extra verbose</span>
+    <span class="na">-vv</span>
+
+<span class="c1">; show detailed test counts</span>
+    <span class="na">-ra</span>
+
+<span class="c1">; stop after 10 failures</span>
+    <span class="na">--maxfail</span><span class="o">=</span><span class="s">10</span>
+
+<span class="c1">; subjective, I like old-school tracebacks</span>
+    <span class="na">--tb</span><span class="o">=</span><span class="s">short</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              9/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-10">
+          <div class="inner">
+            
+            <header><h1>Quick interlude: imports</h1></header>
+            
+            
+            <section><p>Import system uses a list of paths (<tt class="docutils literal">sys.path</tt>) to lookup.</p>
+<p>CWD is implicitly added to <tt class="docutils literal">sys.path</tt>.</p>
+<p>There is a module/package distinction.</p>
+<p>Versioned imports ain't supported.</p>
+<p>If <tt class="docutils literal">sys.path = <span class="pre">[&quot;/var/foo&quot;,</span> &quot;/var/bar&quot;]</tt> then:</p>
+<ul class="small simple">
+<li><tt class="docutils literal">/var/foo/module.py</tt> - a module</li>
+<li><tt class="docutils literal">/var/foo/package/__init__.py</tt> - a package (<tt class="docutils literal">import package</tt>)</li>
+<li><tt class="docutils literal">/var/foo/package/module.py</tt> - a module inside a package (<tt class="docutils literal">from package import module</tt>)</li>
+<li><tt class="docutils literal">/var/bar/module.py</tt> - can't be imported, it's shadowed</li>
+<li><tt class="docutils literal">/var/bar/package/extra.py</tt> - can't be imported, its package is shadowed</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+              <p>Bonus: namespace packages, more madness!</p>
+<p>Python 3 native support (<a class="reference external" href="https://www.python.org/dev/peps/pep-0420/">PEP-420</a>):</p>
+<ul class="simple">
+<li>nspackages are directories paths without <tt class="docutils literal">__init__.py</tt></li>
+<li>considered only after looking for package in all the paths in <tt class="docutils literal">sys.path</tt></li>
+</ul>
+<p>Python 2 ... a pile of hacks.</p>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              10/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-11">
+          <div class="inner">
+            
+            <header><h1>Pytest: test collection</h1></header>
+            
+            
+            <section><p>Pytest has a file-based test collector:</p>
+<ul class="simple">
+<li>you give it a path</li>
+<li>it finds all the <tt class="docutils literal"><span class="pre">test_*.py</span></tt> files</li>
+<li>it messes up <tt class="docutils literal">sys.path</tt> a bit: adds all the test roots into it</li>
+</ul>
+<p>Suggested layout (flat, <tt class="docutils literal">tests</tt> ain't a package, but everything in it is):</p>
+<pre class="literal-block">
+tests/
+|-- foo\
+|   |-- __init__.py
+|   `-- test_foo.py
+`-- test_bar.py
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+              <p>You can also stick the tests inside your code but that's more suited if:</p>
+<ul>
+<li><p class="first">want to check that your deployed app works on unknown target platform,</p>
+<p>or you're targeting way too many platforms and want to offload some of the testing to users</p>
+</li>
+<li><p class="first">tests don't do crazy stuff (eating lots of resources, borking the os or leaving garbage)</p>
+</li>
+</ul>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              11/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-12">
+          <div class="inner">
+            
+            <header><h1>Pytest: fixtures</h1></header>
+            
+            
+            <section><p>Not to be confused with (data) <a class="reference external" href="https://docs.djangoproject.com/en/1.11/howto/initial-data/">fixtures</a> from
+Django (the result of <tt class="docutils literal">dumpdata</tt> command).</p>
+<pre><span></span><span class="nd">@pytest.fixture</span>
+<span class="k">def</span> <span class="nf">myfixture</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="c1"># do some setup</span>
+    <span class="k">yield</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="c1"># do some teardown</span>
+
+<span class="nd">@pytest.fixture</span>
+<span class="k">def</span> <span class="nf">mycomplexfixture</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">fixture1</span><span class="p">,</span> <span class="n">fixture2</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">def</span> <span class="nf">test_fixture</span><span class="p">(</span><span class="n">myfixture</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">myfixture</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">test_complexfixture</span><span class="p">(</span><span class="n">mycomplexfixture</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              12/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-13">
+          <div class="inner">
+            
+            <header><h1>Quick interlude: simple DI impl.</h1></header>
+            
+            
+            <section><pre><span></span><span class="kn">import</span> <span class="nn">functools</span><span class="o">,</span> <span class="nn">inspect</span>
+<span class="n">REGISTRY</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">def</span> <span class="nf">dependency</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="n">REGISTRY</span><span class="p">[</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span>
+<span class="k">def</span> <span class="nf">inject</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">REGISTRY</span><span class="p">[</span><span class="n">arg</span><span class="p">]())</span>
+    <span class="k">return</span> <span class="n">func</span>
+
+<span class="nd">@dependency</span>
+<span class="k">def</span> <span class="nf">dep1</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mi">123</span>
+<span class="nd">@dependency</span>
+<span class="k">def</span> <span class="nf">dep2</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mi">345</span>
+<span class="nd">@inject</span>
+<span class="k">def</span> <span class="nf">fn</span><span class="p">(</span><span class="n">dep1</span><span class="p">,</span> <span class="n">dep2</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">dep1</span><span class="p">,</span> <span class="n">dep2</span><span class="p">)</span>
+</pre>
+<pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fn</span><span class="p">()</span>
+<span class="go">123 345</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              13/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-14">
+          <div class="inner">
+            
+            <header><h1>Pytest basics: fixture scoping</h1></header>
+            
+            
+            <section><pre><span></span><span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s2">&quot;function&quot;</span><span class="p">,</span> <span class="n">autouse</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">myfixture</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre>
+<p><tt class="docutils literal">scope</tt> controls when and for how long the fixture is alive:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">scope=&quot;function&quot;</span></tt> - default, fixture is created and teared down for every test.</li>
+<li><tt class="docutils literal"><span class="pre">scope=&quot;module&quot;</span></tt> - fixture is created for every module.</li>
+<li><tt class="docutils literal"><span class="pre">scope=&quot;session&quot;</span></tt> - fixture is created once.</li>
+</ul>
+<p><tt class="docutils literal">autouse</tt> is for situations where you don't want to explicitly request the fixture for every test.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              14/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-15">
+          <div class="inner">
+            
+            <header><h1>Pytest: markers</h1></header>
+            
+            
+            <section><p>Are applied using decorators, eg:</p>
+<pre><span></span><span class="nd">@pytest.mark.skipif</span><span class="p">(</span><span class="s1">&#39;platform.system() == &quot;Windows&quot;&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_nix_stuff</span><span class="p">():</span>
+    <span class="o">...</span>
+
+<span class="nd">@pytest.mark.mymark</span>
+<span class="k">def</span> <span class="nf">test_stuff</span><span class="p">():</span>  <span class="c1"># can select this later by runing pytest -m mymark</span>
+    <span class="o">...</span>
+
+<span class="nd">@pytest.mark.xfail</span><span class="p">(</span><span class="s1">&#39;platform.system() == &quot;Windows&quot;&#39;</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_shouldnt_work_on_windows</span><span class="p">():</span>  <span class="c1"># fail if it passes</span>
+    <span class="o">...</span>
+
+<span class="nd">@pytest.mark.skip</span>
+<span class="k">def</span> <span class="nf">test_deal_with_it_later</span><span class="p">():</span>
+    <span class="o">...</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              15/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-16">
+          <div class="inner">
+            
+            <header><h1>Pytest: helpers</h1></header>
+            
+            
+            <section><p>An alternative to the <tt class="docutils literal">skip</tt> marker:</p>
+<pre><span></span><span class="k">def</span> <span class="nf">test_deal_with_it_later</span><span class="p">():</span>
+    <span class="n">pytest</span><span class="o">.</span><span class="n">skip</span><span class="p">()</span>
+</pre>
+<p>An alternative to the <tt class="docutils literal">skipif</tt> marker (sometimes):</p>
+<pre><span></span><span class="k">def</span> <span class="nf">test_linux_stuff</span><span class="p">():</span>
+    <span class="n">pytest</span><span class="o">.</span><span class="n">importorskip</span><span class="p">(</span><span class="s1">&#39;signalfd&#39;</span><span class="p">)</span>
+</pre>
+<p>The <tt class="docutils literal">raises</tt> context manager:</p>
+<pre><span></span><span class="k">def</span> <span class="nf">test_stuff</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">raises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="n">match</span><span class="o">=</span><span class="s1">&#39;Expected FooBar, not .*!&#39;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Expected FooBar, not asdf!&#39;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">raises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc_info</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Expected FooBar, not asdf!&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">exc_info</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Expected FooBar&#39;</span><span class="p">)</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              16/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-17">
+          <div class="inner">
+            
+            <header><h1>Pytest: parametrization</h1></header>
+            
+            
+            <section><pre><span></span><span class="nd">@pytest.mark.parametrize</span><span class="p">([</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">test_param</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">3</span>
+</pre>
+<pre class="literal-block">
+collected 2 items
+
+tests/test_param.py::test_param[1-2] PASSED
+tests/test_param.py::test_param[2-1] PASSED
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              17/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-18">
+          <div class="inner">
+            
+            <header><h1>Pytest: parametrized fixtures</h1></header>
+            
+            
+            <section><pre><span></span><span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="nb">len</span><span class="p">,</span> <span class="nb">max</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+
+<span class="nd">@pytest.mark.parametrize</span><span class="p">(</span><span class="s1">&#39;numbers&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="p">])</span>
+<span class="k">def</span> <span class="nf">test_func</span><span class="p">(</span><span class="n">numbers</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">func</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+</pre>
+<pre class="literal-block">
+tests/test_param.py::test_func[func0-numbers0] PASSED
+tests/test_param.py::test_func[func0-numbers1] PASSED
+tests/test_param.py::test_func[func1-numbers0] PASSED
+tests/test_param.py::test_func[func1-numbers1] PASSED
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              18/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-19">
+          <div class="inner">
+            
+            <header><h1>Pytest: parametrized fixtures</h1></header>
+            
+            
+            <section><pre><span></span><span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="nb">len</span><span class="p">,</span> <span class="nb">max</span><span class="p">],</span>
+                <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;len&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">param</span>
+
+<span class="nd">@pytest.mark.parametrize</span><span class="p">(</span><span class="s1">&#39;numbers&#39;</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="p">],</span> <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="s2">&quot;black&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">test_func</span><span class="p">(</span><span class="n">numbers</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">func</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span>
+</pre>
+<pre class="literal-block">
+tests/test_param.py::test_func[len-white] PASSED
+tests/test_param.py::test_func[len-black] PASSED
+tests/test_param.py::test_func[max-white] PASSED
+tests/test_param.py::test_func[max-black] PASSED
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              19/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-20">
+          <div class="inner">
+            
+            <header><h1>Pytest: test selection</h1></header>
+            
+            
+            <section><p>We can select tests based on the parametrization:</p>
+<pre class="literal-block">
+$ pytest -k white -v
+</pre>
+<pre class="literal-block">
+========================= test session starts ==========================
+platform linux -- Python 3.6.2, pytest-3.2.2, py-1.4.34, pluggy-0.4.0 --
+cachedir: .cache
+plugins: django-3.1.2
+collected 9 items
+
+tests/test_example.py::test_func[sum-white] PASSED
+tests/test_example.py::test_func[len-white] PASSED
+tests/test_example.py::test_func[max-white] PASSED
+tests/test_example.py::test_func[min-white] PASSED
+
+========================== 5 tests deselected ==========================
+================ 4 passed, 5 deselected in 0.07 seconds ================
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              20/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-21">
+          <div class="inner">
+            
+            <header><h1>Pytest: hooks</h1></header>
+            
+            
+            <section><p>For now ... all you need to know about hooks:</p>
+<ul class="simple">
+<li>you can implement hooks in a <tt class="docutils literal">conftest.py</tt> or a pytest plugin</li>
+<li>you put <tt class="docutils literal">conftest.py</tt> files alongside your tests</li>
+<li>if there's a function that starts with <tt class="docutils literal">pytest_</tt> - it's probably a hook.</li>
+</ul>
+<p>Also, you put fixtures in your <tt class="docutils literal">conftest.py</tt> (to use them in multiple test files)</p>
+<p>We can talk all day long about hooks but we have to write those tests!</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              21/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-22">
+          <div class="inner">
+            
+            <header><h1>Pytest and Django</h1></header>
+            
+            
+            <section><p>Install the plugin:</p>
+<pre class="literal-block">
+$ pip install pytest-django
+</pre>
+<p>Unfortunately it doesn't go through <tt class="docutils literal">manage.py</tt> so we need to specify the settings module in <tt class="docutils literal">pytest.ini</tt>:</p>
+<pre><span></span><span class="k">[pytest]</span>
+<span class="na">DJANGO_SETTINGS_MODULE</span> <span class="o">=</span> <span class="s">mysite.settings</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              22/22
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source:  -->
+      <div class="slide-wrapper">
+        <div class="slide slide-">
+          <div class="inner">
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            
+            <aside class="page_number">
+              /22
             </aside>
           </footer>
         </div>
@@ -1418,6 +2347,120 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
       </tr>
       
       
+      <tr id="toc-row-4">
+        <th><a href="#slide:4">Tests</a></th>
+        <td><a href="#slide:4">4</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-5">
+        <th><a href="#slide:5">Key features of pytest</a></th>
+        <td><a href="#slide:5">5</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-6">
+        <th><a href="#slide:6">Key features of pytest</a></th>
+        <td><a href="#slide:6">6</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-7">
+        <th><a href="#slide:7">Pytest basics</a></th>
+        <td><a href="#slide:7">7</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-8">
+        <th><a href="#slide:8">Pytest basics</a></th>
+        <td><a href="#slide:8">8</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-9">
+        <th><a href="#slide:9">Pytest basics</a></th>
+        <td><a href="#slide:9">9</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-10">
+        <th><a href="#slide:10">Quick interlude: imports</a></th>
+        <td><a href="#slide:10">10</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-11">
+        <th><a href="#slide:11">Pytest: test collection</a></th>
+        <td><a href="#slide:11">11</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-12">
+        <th><a href="#slide:12">Pytest: fixtures</a></th>
+        <td><a href="#slide:12">12</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-13">
+        <th><a href="#slide:13">Quick interlude: simple DI impl.</a></th>
+        <td><a href="#slide:13">13</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-14">
+        <th><a href="#slide:14">Pytest basics: fixture scoping</a></th>
+        <td><a href="#slide:14">14</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-15">
+        <th><a href="#slide:15">Pytest: markers</a></th>
+        <td><a href="#slide:15">15</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-16">
+        <th><a href="#slide:16">Pytest: helpers</a></th>
+        <td><a href="#slide:16">16</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-17">
+        <th><a href="#slide:17">Pytest: parametrization</a></th>
+        <td><a href="#slide:17">17</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-18">
+        <th><a href="#slide:18">Pytest: parametrized fixtures</a></th>
+        <td><a href="#slide:18">18</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-19">
+        <th><a href="#slide:19">Pytest: parametrized fixtures</a></th>
+        <td><a href="#slide:19">19</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-20">
+        <th><a href="#slide:20">Pytest: test selection</a></th>
+        <td><a href="#slide:20">20</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-21">
+        <th><a href="#slide:21">Pytest: hooks</a></th>
+        <td><a href="#slide:21">21</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-22">
+        <th><a href="#slide:22">Pytest and Django</a></th>
+        <td><a href="#slide:22">22</a></td>
+      </tr>
+      
+      
     </table>
   </div>
   
@@ -1432,10 +2475,6 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
       <tr>
         <th>Exposé</th>
         <td>ESC</td>
-      </tr>
-      <tr>
-        <th>Full screen slides</th>
-        <td>e</td>
       </tr>
       <tr>
         <th>Presenter View</th>
@@ -1454,7 +2493,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         <td>b</td>
       </tr>
       <tr>
-        <th>Show/hide slide context</th>
+        <th>Show/hide next slide</th>
         <td>c</td>
       </tr>
       <tr>
@@ -1467,7 +2506,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
       </tr>
     </table>
     <br>
-    <strong>Generated with Darkslide 2.3.3</strong>
+    <strong>Generated with Darkslide 3.0.1</strong>
   </div>
   <script>main()</script>
 </body>
