@@ -34,6 +34,216 @@ Workshop content
     * builtin fixtures overview
     * pytest-django plugin
 
+.. class:: center fancy
+
+    Ask anytime and anything. Ask for pauses.
+
+-----
+
+Django overview
+===============
+
+* Most popular, very active development
+* Django does establish certain structure on projects
+  but it's not written in stone (https://djangopackages.org/grids/g/microframeworks/)
+* Django ain't that big:
+
+    Django = 79k SLOC
+    Flask (werkzeug+sqlalchemy+jinja2) = 82k SLOC
+
+* Others have way has less ecosystem, less resources and stuff you can reuse
+
+----
+
+Running the project: virtualenv
+===============================
+
+Linux::
+
+    $ virtualenv ve
+    $ . ve/bin/activate
+    $ pip install -e .
+    $ python manage.py migrate
+    $ python manage.py runserver
+
+Windows (at least use `clink <http://mridgers.github.io/clink/>`_)::
+
+    > py -mpip install virtualenv
+    > py -mvirtualenv ve
+    > ve\Scripts\activate.bat
+    > pip install -e .
+    > python manage.py migrate
+    > python manage.py runserver
+
+----
+
+Running the project: tox
+========================
+
+http://tox.rtfd.io
+
+Linux::
+
+    $ pip install tox
+    $ tox -- django-admin migrate
+    $ tox -- django-admin runserver
+
+Windows (at least use `clink <http://mridgers.github.io/clink/>`_)::
+
+    > py -mpip install tox
+    > tox -- django-admin migrate
+    > tox -- django-admin runserver
+
+-----
+
+Django primer: management commands
+==================================
+
+Management commands:
+
+Either through ``manage.py`` or ``django-admin``:
+
+- createsuperuser
+- dbshell
+- dumpdata
+- loaddata
+- makemigrations / migrate / showmigrations
+- shell
+- startapp / startproject
+- runserver
+
+------
+
+Django primer: models
+=====================
+
+.. class:: center
+
+    .. image:: models-wt.svg
+        :height: 400
+
+
+.. sourcecode:: python
+
+    from django.db import models
+
+
+    class Question(models.Model):
+        question_text = models.CharField(max_length=200)
+        pub_date = models.DateTimeField('date published')
+
+-----
+
+Quick interlude: model magic
+============================
+
+Ultra-simplified guts of Model/Form classes:
+
+.. sourcecode:: python
+
+    class Field:
+        def __repr__(self):
+            return 'Field(name={.name})'.format(self)
+
+    class Metaclass(type):
+        def __new__(mcs, name, bases, attrs):
+            fields = attrs.setdefault('fields', [])
+            for name, value in attrs.items():
+                if isinstance(value, Field):
+                    value.name = name; fields.append(value)
+            return super(Metaclass, mcs).__new__(mcs, name, bases, attrs)
+
+    class Model(metaclass=Metaclass):
+        a = Field()
+        b = Field()
+
+
+.. sourcecode:: pycon
+
+    >>> print(MyModel.fields)
+    [Field(name=a), Field(name=b)]
+
+-----
+
+Django primer: views
+====================
+
+Views - two kinds:
+
+#. Class-Based Views
+
+   .. code-block:: py
+
+        class DetailView(generic.DetailView):
+            model = Question
+            template_name = 'polls/detail.html'
+
+#. Function views
+
+   .. code-block:: py
+
+        def vote(request, question_id):
+            question = get_object_or_404(Question, pk=question_id)
+            try:
+                selected_choice = question.choice_set.get(pk=request.POST['choice'])
+            except (KeyError, Choice.DoesNotExist):
+                return render(request, 'polls/detail.html', {
+                    'question': question,
+                    'error_message': "You didn't select a choice.",
+                })
+            else:
+                selected_choice.votes += 1
+                selected_choice.save()
+                return redirect('polls:results', question.id)
+-----
+
+Django primer: URLs
+===================
+
+Views are mapped to URLs in ``urls.py`` files, eg:
+
+* ``mysite/urls.py``:
+
+  .. code-block:: py
+
+    urlpatterns = [
+        url(r'^', include('polls.urls')),
+    ]
+* ``polls/urls.py``:
+
+  .. code-block:: py
+
+    urlpatterns = [
+        url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),
+        url(r'^(?P<question_id>[0-9]+)/vote/$', views.vote, name='vote'),
+    ]
+
+-----
+
+Django primer: templates
+========================
+
+Templates automatically call and ignore missing attributes:
+
+- ``{{ foo.bar.missing }}`` outputs nothing
+- ``{{ foo }}`` calls foo if it's a callable (__call__)
+- ``{{ foo(1, 2, 3) }}`` is not allowed (by design)
+- ``{{ foo|default:"}}" }}`` is not possible (parser ain't very smart)
+
+.. code-block:: html+django
+
+    <h1>{{ question.question_text }}</h1>
+
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+    <form action="{% url 'polls:vote' question.id %}" method="post">
+    {% csrf_token %}
+    {% for choice in question.choice_set.all %}
+        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
+        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br />
+    {% endfor %}
+    <input type="submit" value="Vote" />
+    </form>
 
 ----
 
@@ -44,13 +254,13 @@ Tests
 Some background:
 
 - Django comes with own testing system, but it turns out ``unittest.TestCase`` ain't so good (in general).
-- There are three alternatives:
+    - There are three alternatives:
 
   - Nose (unmaintained)
   - Nose2 (unusable, it's missing almost all the Nose plugins)
   - Pytest
 
-  Note that Nose is a fork of Pytest 0.8 (ancient)
+  Note that Nose is a fork of Pytest 0.8 (ancient, circa 2007)
 
 ------
 
