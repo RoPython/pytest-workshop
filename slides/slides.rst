@@ -764,7 +764,7 @@ What's with the ``decode``?
 
     </style>
     <table class=diagram cellspacing=0>
-        <tr><td colspan=3>0010100101001011001001110101010110010101</td></tr>
+        <tr><td colspan=3>1001110101010110010101</td></tr>
         <tr><td colspan=2 class="st sr b sl">decode</td><td class=b><em>input</em></td><td></td></tr>
 
         <tr><td class=l>Unicode</td><td>→</td><td class=r>Unicode</td></tr>
@@ -774,7 +774,7 @@ What's with the ``decode``?
         <tr><td class=l>Unicode</td><td>→</td><td class=r>Unicode</td></tr>
 
         <tr><td class=t><em>output</em></td><td colspan=2 class="t sr sb sl">encode</td></tr>
-        <tr><td colspan=3>0010100101001011001001110101010110010101</td></tr>
+        <tr><td colspan=3>1001110101010110010101</td></tr>
     </table>
 
 .. class:: smaller center
@@ -1152,6 +1152,6 @@ Explore api at: http://splinter.rtfd.io
 
 .. raw:: html
 
-    <script>fitty('header h1');</script>
+    <script>fitty('header h1', {maxSize: 64});</script>
 
 

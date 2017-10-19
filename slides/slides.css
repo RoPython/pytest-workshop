@@ -23,11 +23,11 @@
     font-weight: bold;
 }
 
-.fitty header {
+header {
     right: 10px;
 }
 
-.fitty header h1 {
+header h1 {
     display: inline-block;
     white-space: nowrap;
 }
