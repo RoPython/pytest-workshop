@@ -276,15 +276,23 @@ body,
     top: 50%;
     margin-top: -375px;
     margin-left: -500px;
-    -webkit-transition: margin 0.3s ease-in, opacity 0.3s ease-in;
-    -moz-transition: margin 0.3s ease-in, opacity 0.3s ease-in;
-    -o-transition: margin 0.3s ease-in, opacity 0.3s ease-in;
+    -webkit-transition: margin 0.5s ease-in, opacity 0.5s ease-in;
+    -moz-transition: margin 0.5s ease-in, opacity 0.5s ease-in;
+    -o-transition: margin 0.5s ease-in, opacity 0.5s ease-in;
 }
 .slide.current,
 .slide.prev,
 .slide.next,
-.slide.after_next {
+.slide.next_1,
+.slide.next_2 {
     display: block;
+}
+.slide.prev_1,
+.slide.next_2 {
+    opacity: 0;
+}
+.slide.prev_1 {
+    margin-left: -1525px;
 }
 .slide.prev {
     margin-left: -1510px;
@@ -292,10 +300,12 @@ body,
 .slide.next {
     margin-left: 510px;
 }
-.slide.after_next {
+.slide.next_2 {
+    margin-left: 1035px;
+}
+.slide.next_1 {
     margin-left: 1520px;
 }
-
 .show_next .slide.prev {
     margin-left: -2015px;
 }
@@ -305,7 +315,7 @@ body,
 .show_next .slide.next {
     margin-left: 5px;
 }
-.show_next .slide.after_next {
+.show_next .slide.next_1 {
     margin-left: 1015px;
 }
 /* Content */
@@ -403,6 +413,7 @@ body,
 }
 .expose .slide {
     display: block;
+    opacity: 1;
     float: left;
     position: relative;
     left: auto !important;
@@ -434,7 +445,7 @@ body,
 .expose .slide .inner {
 }
 .expose .slide.next,
-.expose .slide.after_next {
+.expose .slide.next_1 {
     margin-left: 0;
 }
 /* Presenter Mode */
@@ -466,7 +477,7 @@ body,
     margin-left: 15px;
     z-index: 1;
 }
-.presenter_view .slide.after_next {
+.presenter_view .slide.next_1 {
     display: block;
     margin-left: 525px;
 }
@@ -826,7 +837,7 @@ pre {
     var changeSlideElClass = function (slideNo, className) {
         var el = getSlideEl(slideNo);
         if (el) {
-            removeClass(el, 'prev current next after_next none');
+            removeClass(el, 'prev prev_1 current next next_1 next_2 none');
             addClass(el, className);
         }
     };
@@ -834,12 +845,14 @@ pre {
     var updateSlideClasses = function (updateOther) {
         window.location.hash = (isPresenterView ? "presenter:" : "slide:") + currentSlideNo;
 
-        for (i = 1; i < currentSlideNo + 1; i++) changeSlideElClass(i, 'none');
+        for (i = 1; i < currentSlideNo - 1; i++) changeSlideElClass(i, 'none');
+        changeSlideElClass(currentSlideNo - 2, 'prev_1');
         changeSlideElClass(currentSlideNo - 1, 'prev');
         changeSlideElClass(currentSlideNo, 'current');
         changeSlideElClass(currentSlideNo + 1, 'next');
-        changeSlideElClass(currentSlideNo + 2, 'after_next');
-        for (i = currentSlideNo + 3; i < slides.length + 1; i++) changeSlideElClass(i, 'none');
+        changeSlideElClass(currentSlideNo + 2, 'next_1');
+        changeSlideElClass(currentSlideNo + 3, 'next_2');
+        for (i = currentSlideNo + 4; i < slides.length + 1; i++) changeSlideElClass(i, 'none');
 
         highlightCurrentTocLink();
 
@@ -1359,7 +1372,7 @@ pre {
             </aside>
             
             <aside class="page_number">
-              1/35
+              1/48
             </aside>
           </footer>
         </div>
@@ -1393,7 +1406,7 @@ pre {
             </aside>
             
             <aside class="page_number">
-              2/35
+              2/48
             </aside>
           </footer>
         </div>
@@ -1440,7 +1453,7 @@ pre {
             </aside>
             
             <aside class="page_number">
-              3/35
+              3/48
             </aside>
           </footer>
         </div>
@@ -1487,7 +1500,7 @@ Flask (werkzeug+sqlalchemy+jinja2) = 82k SLOC</p>
             </aside>
             
             <aside class="page_number">
-              4/35
+              4/48
             </aside>
           </footer>
         </div>
@@ -1536,7 +1549,7 @@ $ python manage.py runserver
             </aside>
             
             <aside class="page_number">
-              5/35
+              5/48
             </aside>
           </footer>
         </div>
@@ -1581,7 +1594,7 @@ $ tox -- django-admin runserver
             </aside>
             
             <aside class="page_number">
-              6/35
+              6/48
             </aside>
           </footer>
         </div>
@@ -1589,7 +1602,7 @@ $ tox -- django-admin runserver
       
       <!-- slide source: slides/slides.rst -->
       <div class="slide-wrapper">
-        <div class="slide fitty has_footer slide-7">
+        <div class="slide has_footer slide-7">
           <div class="inner">
             
             <header><h1>Django primer: management commands</h1></header>
@@ -1625,7 +1638,7 @@ $ tox -- django-admin runserver
             </aside>
             
             <aside class="page_number">
-              7/35
+              7/48
             </aside>
           </footer>
         </div>
@@ -1666,7 +1679,7 @@ models-wt.svg</object>
             </aside>
             
             <aside class="page_number">
-              8/35
+              8/48
             </aside>
           </footer>
         </div>
@@ -1718,7 +1731,7 @@ models-wt.svg</object>
             </aside>
             
             <aside class="page_number">
-              9/35
+              9/48
             </aside>
           </footer>
         </div>
@@ -1775,7 +1788,7 @@ models-wt.svg</object>
             </aside>
             
             <aside class="page_number">
-              10/35
+              10/48
             </aside>
           </footer>
         </div>
@@ -1823,7 +1836,7 @@ models-wt.svg</object>
             </aside>
             
             <aside class="page_number">
-              11/35
+              11/48
             </aside>
           </footer>
         </div>
@@ -1877,7 +1890,7 @@ models-wt.svg</object>
             </aside>
             
             <aside class="page_number">
-              12/35
+              12/48
             </aside>
           </footer>
         </div>
@@ -1926,7 +1939,7 @@ models-wt.svg</object>
             </aside>
             
             <aside class="page_number">
-              13/35
+              13/48
             </aside>
           </footer>
         </div>
@@ -1968,7 +1981,7 @@ models-wt.svg</object>
             </aside>
             
             <aside class="page_number">
-              14/35
+              14/48
             </aside>
           </footer>
         </div>
@@ -2006,7 +2019,7 @@ models-wt.svg</object>
             </aside>
             
             <aside class="page_number">
-              15/35
+              15/48
             </aside>
           </footer>
         </div>
@@ -2049,7 +2062,7 @@ $ pip install pytest
             </aside>
             
             <aside class="page_number">
-              16/35
+              16/48
             </aside>
           </footer>
         </div>
@@ -2102,7 +2115,7 @@ tests/test_example.py:5: AssertionError
             </aside>
             
             <aside class="page_number">
-              17/35
+              17/48
             </aside>
           </footer>
         </div>
@@ -2157,7 +2170,7 @@ tests/test_example.py:5: AssertionError
             </aside>
             
             <aside class="page_number">
-              18/35
+              18/48
             </aside>
           </footer>
         </div>
@@ -2182,7 +2195,8 @@ tests/test_example.py:5: AssertionError
 <li><tt class="docutils literal">/var/foo/package/module.py</tt> - a module inside a package (<tt class="docutils literal">from package import module</tt>)</li>
 <li><tt class="docutils literal">/var/bar/module.py</tt> - can't be imported, it's shadowed</li>
 <li><tt class="docutils literal">/var/bar/package/extra.py</tt> - can't be imported, its package is shadowed</li>
-</ul></section>
+</ul>
+<p class="fancy center">✽</p></section>
             
           </div>
           <div class="presenter_notes">
@@ -2209,7 +2223,7 @@ tests/test_example.py:5: AssertionError
             </aside>
             
             <aside class="page_number">
-              19/35
+              19/48
             </aside>
           </footer>
         </div>
@@ -2236,7 +2250,8 @@ tests/
 |   |-- __init__.py
 |   `-- test_foo.py
 `-- test_bar.py
-</pre></section>
+</pre>
+<p class="fancy center">✽</p></section>
             
           </div>
           <div class="presenter_notes">
@@ -2264,7 +2279,7 @@ tests/
             </aside>
             
             <aside class="page_number">
-              20/35
+              20/48
             </aside>
           </footer>
         </div>
@@ -2316,7 +2331,7 @@ Django (the result of <tt class="docutils literal">dumpdata</tt> command).</p>
             </aside>
             
             <aside class="page_number">
-              21/35
+              21/48
             </aside>
           </footer>
         </div>
@@ -2371,7 +2386,7 @@ Django (the result of <tt class="docutils literal">dumpdata</tt> command).</p>
             </aside>
             
             <aside class="page_number">
-              22/35
+              22/48
             </aside>
           </footer>
         </div>
@@ -2414,7 +2429,7 @@ Django (the result of <tt class="docutils literal">dumpdata</tt> command).</p>
             </aside>
             
             <aside class="page_number">
-              23/35
+              23/48
             </aside>
           </footer>
         </div>
@@ -2463,7 +2478,7 @@ Django (the result of <tt class="docutils literal">dumpdata</tt> command).</p>
             </aside>
             
             <aside class="page_number">
-              24/35
+              24/48
             </aside>
           </footer>
         </div>
@@ -2512,7 +2527,7 @@ Django (the result of <tt class="docutils literal">dumpdata</tt> command).</p>
             </aside>
             
             <aside class="page_number">
-              25/35
+              25/48
             </aside>
           </footer>
         </div>
@@ -2558,7 +2573,7 @@ tests/test_param.py::test_param[2-1] PASSED
             </aside>
             
             <aside class="page_number">
-              26/35
+              26/48
             </aside>
           </footer>
         </div>
@@ -2607,7 +2622,7 @@ tests/test_param.py::test_func[func1-numbers1] PASSED
             </aside>
             
             <aside class="page_number">
-              27/35
+              27/48
             </aside>
           </footer>
         </div>
@@ -2657,7 +2672,7 @@ tests/test_param.py::test_func[max-black] PASSED
             </aside>
             
             <aside class="page_number">
-              28/35
+              28/48
             </aside>
           </footer>
         </div>
@@ -2708,7 +2723,7 @@ tests/test_example.py::test_func[min-white] PASSED
             </aside>
             
             <aside class="page_number">
-              29/35
+              29/48
             </aside>
           </footer>
         </div>
@@ -2748,7 +2763,7 @@ tests/test_example.py::test_func[min-white] PASSED
             </aside>
             
             <aside class="page_number">
-              30/35
+              30/48
             </aside>
           </footer>
         </div>
@@ -2788,7 +2803,7 @@ $ pip install pytest-django
             </aside>
             
             <aside class="page_number">
-              31/35
+              31/48
             </aside>
           </footer>
         </div>
@@ -2836,7 +2851,7 @@ $ pip install pytest-django
             </aside>
             
             <aside class="page_number">
-              32/35
+              32/48
             </aside>
           </footer>
         </div>
@@ -2847,12 +2862,78 @@ $ pip install pytest-django
         <div class="slide has_footer slide-33">
           <div class="inner">
             
+            <header><h1>What's with the <tt class="docutils literal">decode</tt>?</h1></header>
+            
+            
+            <section><p class="fancy center">The Unicode sandwich</p>
+<style>
+    .diagram {
+        margin: 1em auto;
+        font-family: serif;
+        font-size: 80%;
+    }
+
+    .diagram td { padding: .25em .5em; text-align: center; }
+    .diagram .t { border-top:    5px solid white; }
+    .diagram .r { border-right:  5px solid white; }
+    .diagram .b { border-bottom: 5px solid white; }
+    .diagram .l { border-left:   5px solid white; }
+
+    .diagram .st { border-top:    2px solid white; }
+    .diagram .sr { border-right:  2px solid white; }
+    .diagram .sb { border-bottom: 2px solid white; }
+    .diagram .sl { border-left:   2px solid white; }
+
+</style>
+<table class=diagram cellspacing=0>
+    <tr><td colspan=3>0010100101001011001001110101010110010101</td></tr>
+    <tr><td colspan=2 class="st sr b sl">decode</td><td class=b><em>input</em></td><td></td></tr>
+
+    <tr><td class=l>Unicode</td><td>→</td><td class=r>Unicode</td></tr>
+    <tr><td class=l>       </td><td> </td><td class=r>   ↓   </td></tr>
+    <tr><td class=l>Unicode</td><td>←</td><td class=r>Unicode</td></tr>
+    <tr><td class=l>   ↓   </td><td> </td><td class=r>       </td></tr>
+    <tr><td class=l>Unicode</td><td>→</td><td class=r>Unicode</td></tr>
+
+    <tr><td class=t><em>output</em></td><td colspan=2 class="t sr sb sl">encode</td></tr>
+    <tr><td colspan=3>0010100101001011001001110101010110010101</td></tr>
+</table><p class="smaller center">See: <a class="reference external" href="https://nedbatchelder.com/text/unipain/unipain.html#35">https://nedbatchelder.com/text/unipain/unipain.html#35</a></p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              33/48
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-34">
+          <div class="inner">
+            
             <header><h1>Making a fixture for questions</h1></header>
             
             
-            <section><p>And now we continue to struggle with choosing the right amount of assertions:</p>
-<pre><span></span><span class="nd">@pytest.fixture</span>
-<span class="k">def</span> <span class="nf">question</span><span class="p">(</span><span class="n">question_generator</span><span class="p">):</span>
+            <section><pre><span></span><span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">timezone</span>
+
+<span class="nd">@pytest.fixture</span>
+<span class="k">def</span> <span class="nf">question</span><span class="p">(</span><span class="n">db</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">Question</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
         <span class="n">question_text</span><span class="o">=</span><span class="s2">&quot;What is love?&quot;</span><span class="p">,</span>
         <span class="n">pub_date</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
@@ -2868,7 +2949,7 @@ $ pip install pytest-django
     <span class="k">assert</span> <span class="s1">&#39;href=&quot;/polls/1/&quot;&gt;What is love?&lt;/a&gt;&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span>
         <span class="n">response</span><span class="o">.</span><span class="n">charset</span><span class="p">)</span>
 </pre>
-<p class="fancy center">✽ <em>Story on SDT</em> ✽</p></section>
+<p class="fancy center">✽</p></section>
             
           </div>
           <div class="presenter_notes">
@@ -2894,7 +2975,7 @@ $ pip install pytest-django
             </aside>
             
             <aside class="page_number">
-              33/35
+              34/48
             </aside>
           </footer>
         </div>
@@ -2902,7 +2983,7 @@ $ pip install pytest-django
       
       <!-- slide source: slides/slides.rst -->
       <div class="slide-wrapper">
-        <div class="slide has_footer slide-34">
+        <div class="slide has_footer slide-35">
           <div class="inner">
             
             <header><h1>Pragmatic testing</h1></header>
@@ -2937,7 +3018,7 @@ $ pip install pytest-django
             </aside>
             
             <aside class="page_number">
-              34/35
+              35/48
             </aside>
           </footer>
         </div>
@@ -2945,75 +3026,13 @@ $ pip install pytest-django
       
       <!-- slide source: slides/slides.rst -->
       <div class="slide-wrapper">
-        <div class="slide has_footer slide-35">
+        <div class="slide has_footer slide-36">
           <div class="inner">
             
+            <header><h1>Having more question objects</h1></header>
             
-            <section><blockquote>
-<dl class="docutils">
-<dt>def test_index_view_two_questions(client, question_generator):</dt>
-<dd><p class="first">now = timezone.now()
-question1 = question_generator(question_text=&quot;Question 1&quot;, pub_date=now)
-question2 = question_generator(question_text=&quot;Question 2&quot;, pub_date=now - timedelta(hours=1))</p>
-<p class="last">response = client.get('/')
-assert response.status_code == 200
-assert list(response.context_data['latest_question_list']) == [question1, question2]</p>
-</dd>
-<dt>def test_index_view_only_last_five_questions(client, question_generator):</dt>
-<dd><p class="first">now = timezone.now()
-questions = [question_generator(question_text=&quot;Question {}&quot;.format(i), pub_date=now - timedelta(hours=i))</p>
-<blockquote>
-for i in range(0, 10)]</blockquote>
-<p class="last">response = client.get('/')
-assert response.status_code == 200
-assert list(response.context_data['latest_question_list']) == questions[:5]</p>
-</dd>
-<dt>def test_index_view_exclude_question_published_in_future(client, question_generator):</dt>
-<dd><p class="first">now = timezone.now()
-question1 = question_generator(question_text=&quot;Question 1&quot;, pub_date=now)
-question2 = question_generator(question_text=&quot;Question 2&quot;, pub_date=now + timedelta(hours=1))</p>
-<p class="last">response = client.get('/')
-assert response.status_code == 200
-assert list(response.context_data['latest_question_list']) == [question1]</p>
-</dd>
-<dt>def test_vote_question_not_found(client, db):</dt>
-<dd>response = client.get('/999/vote/')
-assert response.status_code == 404</dd>
-<dt>def test_vote_question_found_no_choice(client, question):</dt>
-<dd>response = client.post('/%s/vote/' % question.id)
-assert response.status_code == 200
-assert question.question_text in force_text(response.content)
-assert escape(&quot;You didn't select a choice.&quot;) in force_text(response.content)</dd>
-<dt>def test_vote_question_found_with_choice(client, question, question_choice_generator):</dt>
-<dd><p class="first">choice1 = question_choice_generator(question=question, choice_text=&quot;Choice 1&quot;, votes=0)</p>
-<dl class="docutils">
-<dt>response = client.post('/%s/vote/' % question.id,</dt>
-<dd>data={&quot;choice&quot;: choice1.id})</dd>
-</dl>
-<p>assert response.status_code == 302
-assert response.url == reverse('polls:results', args=(question.id,))</p>
-<p class="last">choice1.refresh_from_db()
-assert choice1.votes == 1</p>
-</dd>
-<dt>def test_detail_view_question_not_found(client, db):</dt>
-<dd>response = client.get('/999/')
-assert response.status_code == 404</dd>
-<dt>def test_detail_view_question_found(client, question):</dt>
-<dd>response = client.get('/%s/' % question.id)
-assert response.status_code == 200
-assert response.context_data['object'] == question
-assert 'polls/detail.html' in response.template_name</dd>
-<dt>def test_results_view_question_not_found(client, db):</dt>
-<dd>response = client.get('/999/results/')
-assert response.status_code == 404</dd>
-<dt>def test_results_view_question_found(client, question):</dt>
-<dd>response = client.get('/%s/results/' % question.id)
-assert response.status_code == 200
-assert response.context_data['object'] == question
-assert 'polls/results.html' in response.template_name</dd>
-</dl>
-</blockquote>
-<script>fitty('.fitty header h1');</script></section>
+            
+            <section><p>We can't require a fixture more than once, thus:</p></section>
             
           </div>
           <div class="presenter_notes">
@@ -3032,7 +3051,560 @@ assert 'polls/results.html' in response.template_name</dd>
             </aside>
             
             <aside class="page_number">
-              35/35
+              36/48
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-37">
+          <div class="inner">
+            
+            <header><h1>Having tons of questions</h1></header>
+            
+            
+            <section><p>Note that the view is set to only display the last 5 questions, thus:</p>
+<pre><span></span><span class="k">def</span> <span class="nf">test_index_view_only_last_five_questions</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">question_factory</span><span class="p">):</span>
+    <span class="n">questions</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">question_factory</span><span class="p">(</span><span class="s2">&quot;Question {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="o">-</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">i</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+    <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;latest_question_list&#39;</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">==</span> <span class="n">questions</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+
+    <span class="n">content</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">charset</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="s1">&#39;href=&quot;/polls/{0}/&quot;&gt;Question {0}&lt;/a&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">in</span> <span class="n">content</span>
+    <span class="k">assert</span> <span class="s1">&#39;Question 6&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">content</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              37/48
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-38">
+          <div class="inner">
+            
+            <header><h1>Having future questions</h1></header>
+            
+            
+            <section><p>Questions in the future shouldn't be displayed, thus:</p>
+<pre><span></span><span class="k">def</span> <span class="nf">test_index_view_exclude_question_published_in_future</span><span class="p">(</span><span class="n">client</span><span class="p">,</span>
+                                                         <span class="n">question_factory</span><span class="p">):</span>
+    <span class="n">question_factory</span><span class="p">(</span><span class="s2">&quot;Question 1&quot;</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+    <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;latest_question_list&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="p">[]</span>
+    <span class="k">assert</span> <span class="s1">&#39;Question 1&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">charset</span><span class="p">)</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              38/48
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-39">
+          <div class="inner">
+            
+            <header><h1>Bogus ids</h1></header>
+            
+            
+            <section><p>Proper response should be returned on bogus IDs:</p>
+<pre><span></span><span class="k">def</span> <span class="nf">test_detail_view_question_not_found</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/999/&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span>
+
+<span class="k">def</span> <span class="nf">test_vote_question_not_found</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/999/vote/&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span>
+
+<span class="k">def</span> <span class="nf">test_results_view_question_not_found</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/999/results/&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              39/48
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-40">
+          <div class="inner">
+            
+            <header><h1>Dealing with bad questions</h1></header>
+            
+            
+            <section><p>Questions that don't have any answers, of course!</p>
+<pre><span></span><span class="k">def</span> <span class="nf">test_detail_view_question_found</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">question</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/</span><span class="si">%s</span><span class="s1">/&#39;</span> <span class="o">%</span> <span class="n">question</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+    <span class="k">assert</span> <span class="s1">&#39;What is love?&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">text_content</span>
+    <span class="k">assert</span> <span class="s1">&#39;Someone needs to figure out some answers!&#39;</span> \
+        <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">text_content</span>
+
+    <span class="c1"># assertions you&#39;ll be sorry for (coupling!)</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;object&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">question</span>
+    <span class="k">assert</span> <span class="s1">&#39;polls/detail.html&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">template_name</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              40/48
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-41">
+          <div class="inner">
+            
+            <header><h1>Isn't the client fixture a bit annoying?</h1></header>
+            
+            
+            <section><p>It sure is, so lets fix it:</p>
+<pre><span></span><span class="nd">@pytest.fixture</span>
+<span class="k">def</span> <span class="nf">client</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+    <span class="n">func</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">request</span>
+
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># instead of throwing prints all over the place</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;&gt;&gt;&gt;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;{}={!r}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">item</span><span class="p">)</span>
+                               <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;&lt;&lt;&#39;</span><span class="p">,</span> <span class="n">resp</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="c1"># also, decode the content</span>
+        <span class="n">resp</span><span class="o">.</span><span class="n">text_content</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">charset</span><span class="p">)</span>
+        <span class="c1"># why not patch resp.content? well ...</span>
+        <span class="k">return</span> <span class="n">resp</span>
+
+    <span class="n">client</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">wrapper</span>
+    <span class="k">return</span> <span class="n">client</span>
+</pre>
+<p>Watch the scope when patching stuff. In this case it was fine (<tt class="docutils literal">pytest_django.client</tt> had the same scope - <tt class="docutils literal">&quot;function&quot;</tt>).</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              41/48
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-42">
+          <div class="inner">
+            
+            <header><h1>Creating some answers</h1></header>
+            
+            
+            <section><pre><span></span><span class="nd">@pytest.fixture</span>
+<span class="k">def</span> <span class="nf">question_choice_factory</span><span class="p">(</span><span class="n">db</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">create_question_choice</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">choice_text</span><span class="p">,</span> <span class="n">votes</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Choice</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">question</span><span class="o">=</span><span class="n">question</span><span class="p">,</span>
+                                     <span class="n">choice_text</span><span class="o">=</span><span class="n">choice_text</span><span class="p">,</span>
+                                     <span class="n">votes</span><span class="o">=</span><span class="n">votes</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">create_question_choice</span>
+
+
+<span class="k">def</span> <span class="nf">test_vote_question_found_with_choice</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">question</span><span class="p">,</span>
+                                         <span class="n">question_choice_factory</span><span class="p">):</span>
+    <span class="n">choice1</span> <span class="o">=</span> <span class="n">question_choice_factory</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="s2">&quot;Choice 1&quot;</span><span class="p">,</span> <span class="n">votes</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/</span><span class="si">%s</span><span class="s1">/vote/&#39;</span> <span class="o">%</span> <span class="n">question</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                           <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;choice&quot;</span><span class="p">:</span> <span class="n">choice1</span><span class="o">.</span><span class="n">id</span><span class="p">})</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">302</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">url</span> <span class="o">==</span> <span class="s1">&#39;/</span><span class="si">%s</span><span class="s1">/results/&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">question</span><span class="o">.</span><span class="n">id</span><span class="p">,)</span>
+
+    <span class="n">choice1</span><span class="o">.</span><span class="n">refresh_from_db</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">choice1</span><span class="o">.</span><span class="n">votes</span> <span class="o">==</span> <span class="mi">1</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              42/48
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-43">
+          <div class="inner">
+            
+            <header><h1>Testing the results</h1></header>
+            
+            
+            <section><p>We should check the result page too.</p>
+<p>An easy way is to just slap on some extra assertions in the previous test:</p>
+<pre><span></span><span class="k">def</span> <span class="nf">test_vote_question_found_with_choice</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="o">...</span>
+
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/</span><span class="si">%s</span><span class="s1">/results/&#39;</span> <span class="o">%</span> <span class="n">question</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="s1">&#39;&lt;li&gt;Choice 1 -- 1 vote&lt;/li&gt;&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">text_content</span>
+</pre>
+<p>The disadvantage is that test becomes bulky and debugging may be harder.</p>
+<p>Guess what's missing, template has this:</p>
+<pre><span></span><span class="cp">{%</span> <span class="k">for</span> <span class="nv">choice</span> <span class="k">in</span> <span class="nv">question.choice_set.all</span> <span class="cp">%}</span>
+    <span class="p">&lt;</span><span class="nt">li</span><span class="p">&gt;</span><span class="cp">{{</span> <span class="nv">choice.choice_text</span> <span class="cp">}}</span> --
+        <span class="cp">{{</span> <span class="nv">choice.votes</span> <span class="cp">}}</span> vote<span class="cp">{{</span> <span class="nv">choice.votes</span><span class="o">|</span><span class="nf">pluralize</span> <span class="cp">}}</span><span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              43/48
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-44">
+          <div class="inner">
+            
+            <header><h1>Testing the results</h1></header>
+            
+            
+            <section><p>Problems with newlines?</p>
+<p>An alternative is regexes but lets unpack this first:</p>
+<pre><span></span><span class="k">assert</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;li&gt;Choice 1\s+--\s+1 vote&lt;/li&gt;&#39;</span><span class="p">,</span>
+                  <span class="n">response</span><span class="o">.</span><span class="n">text_content</span><span class="p">)</span>
+</pre>
+<ul class="simple">
+<li><tt class="docutils literal">re.findall</tt> mean find all matches anywhere (don't fall for <tt class="docutils literal">re.match</tt> - it matches at the start of the string)</li>
+<li><tt class="docutils literal">r'foo\bar'</tt> means no escapes (same as <tt class="docutils literal"><span class="pre">'foo\\bar'</span></tt>)</li>
+<li><tt class="docutils literal">\s</tt> means (in regex parlance) any space (same as <tt class="docutils literal">'[ \t\n\r\f\v]'</tt> plus the damned Unicode whitespace characters)</li>
+<li><tt class="docutils literal">+</tt> is a qualifier, it means &quot;one or more&quot;</li>
+<li><tt class="docutils literal">\s+</tt> means &quot;one of more space characters&quot;</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              44/48
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-45">
+          <div class="inner">
+            
+            <header><h1>Testing bad requests</h1></header>
+            
+            
+            <section><p>Test what happens when there's no form data:</p>
+<pre><span></span><span class="k">def</span> <span class="nf">test_vote_question_found_no_choice</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">question</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/</span><span class="si">%s</span><span class="s1">/vote/&#39;</span> <span class="o">%</span> <span class="n">question</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">charset</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="s1">&#39;What is love?&#39;</span> <span class="ow">in</span> <span class="n">content</span>
+    <span class="k">assert</span> <span class="s2">&quot;You didn&amp;#39;t select a choice.&quot;</span> <span class="ow">in</span> <span class="n">content</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              45/48
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-46">
+          <div class="inner">
+            
+            <header><h1>Getting ideas about missing tests</h1></header>
+            
+            
+            <section><p>Suggested use:</p>
+<pre class="literal-block">
+$ pip install pytest-cov
+$ pytest --cov=. --cov-report=term-missing --cov-branch
+</pre>
+<p>Alternatively, create a <tt class="docutils literal">.coveragerc</tt>:</p>
+<pre><span></span><span class="k">[run]</span>
+<span class="na">branch</span> <span class="o">=</span> <span class="s">true</span>
+<span class="na">source</span> <span class="o">=</span> <span class="s">src</span>
+
+<span class="k">[report]</span>
+<span class="na">show_missing</span> <span class="o">=</span> <span class="s">true</span>
+<span class="na">precision</span> <span class="o">=</span> <span class="s">2</span>
+</pre>
+<p>With that it's simpler to run, just:</p>
+<pre class="literal-block">
+$ pytest --cov
+</pre>
+<p class="fancy center">Note: having 100% coverage doesn't mean you have tested everything. But if you don't you probably haven't.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              46/48
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-47">
+          <div class="inner">
+            
+            <header><h1>More on coverage: ignoring irrelevant stuff</h1></header>
+            
+            
+            <section><p>In <tt class="docutils literal">.coveragerc</tt>:</p>
+<pre><span></span><span class="k">[report]</span>
+<span class="na">omit</span> <span class="o">=</span><span class="s"></span>
+<span class="s">    *apps.py</span>
+<span class="s">    *manage.py</span>
+<span class="s">    *wsgi.py</span>
+</pre>
+<p>Alternative, have these on the lines that don't need to be covered:</p>
+<pre><span></span><span class="n">stuff_that_is_not_frequently_used</span><span class="p">()</span>  <span class="c1"># pragma: no cover</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              47/48
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-48">
+          <div class="inner">
+            
+            <header><h1>Browser tests with pytest-splinter (optional)</h1></header>
+            
+            
+            <section><p>Get the right binary from:</p>
+<blockquote>
+<a class="reference external" href="https://github.com/mozilla/geckodriver/releases">https://github.com/mozilla/geckodriver/releases</a></blockquote>
+<p>Put it in CWD.</p>
+<pre><span></span><span class="k">def</span> <span class="nf">test_index</span><span class="p">(</span><span class="n">pages</span><span class="p">,</span> <span class="n">browser</span><span class="p">,</span> <span class="n">live_server</span><span class="p">):</span>
+    <span class="n">browser</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">live_server</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">browser</span><span class="o">.</span><span class="n">is_text_present</span><span class="p">(</span><span class="s1">&#39;Foo&#39;</span><span class="p">)</span>
+</pre>
+<p>Explore api at: <a class="reference external" href="http://splinter.rtfd.io">http://splinter.rtfd.io</a></p>
+<script>fitty('header h1');</script></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              48/48
             </aside>
           </footer>
         </div>
@@ -3239,20 +3811,98 @@ assert 'polls/results.html' in response.template_name</dd>
       
       
       <tr id="toc-row-33">
-        <th><a href="#slide:33">Making a fixture for questions</a></th>
+        <th><a href="#slide:33">What's with the <tt class="docutils literal">decode</tt>?</a></th>
         <td><a href="#slide:33">33</a></td>
       </tr>
       
       
       <tr id="toc-row-34">
-        <th><a href="#slide:34">Pragmatic testing</a></th>
+        <th><a href="#slide:34">Making a fixture for questions</a></th>
         <td><a href="#slide:34">34</a></td>
       </tr>
       
       
       <tr id="toc-row-35">
-        <th><a href="#slide:35">-</a></th>
+        <th><a href="#slide:35">Pragmatic testing</a></th>
         <td><a href="#slide:35">35</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-36">
+        <th><a href="#slide:36">Having more question objects</a></th>
+        <td><a href="#slide:36">36</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-37">
+        <th><a href="#slide:37">Having tons of questions</a></th>
+        <td><a href="#slide:37">37</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-38">
+        <th><a href="#slide:38">Having future questions</a></th>
+        <td><a href="#slide:38">38</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-39">
+        <th><a href="#slide:39">Bogus ids</a></th>
+        <td><a href="#slide:39">39</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-40">
+        <th><a href="#slide:40">Dealing with bad questions</a></th>
+        <td><a href="#slide:40">40</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-41">
+        <th><a href="#slide:41">Isn't the client fixture a bit annoying?</a></th>
+        <td><a href="#slide:41">41</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-42">
+        <th><a href="#slide:42">Creating some answers</a></th>
+        <td><a href="#slide:42">42</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-43">
+        <th><a href="#slide:43">Testing the results</a></th>
+        <td><a href="#slide:43">43</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-44">
+        <th><a href="#slide:44">Testing the results</a></th>
+        <td><a href="#slide:44">44</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-45">
+        <th><a href="#slide:45">Testing bad requests</a></th>
+        <td><a href="#slide:45">45</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-46">
+        <th><a href="#slide:46">Getting ideas about missing tests</a></th>
+        <td><a href="#slide:46">46</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-47">
+        <th><a href="#slide:47">More on coverage: ignoring irrelevant stuff</a></th>
+        <td><a href="#slide:47">47</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-48">
+        <th><a href="#slide:48">Browser tests with pytest-splinter (optional)</a></th>
+        <td><a href="#slide:48">48</a></td>
       </tr>
       
       

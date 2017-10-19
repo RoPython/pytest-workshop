@@ -99,7 +99,6 @@ Windows (at least use `clink <http://mridgers.github.io/clink/>`_)::
 Django primer: management commands
 ==================================
 
-.fx: fitty
 
 Management commands:
 
@@ -394,6 +393,10 @@ If ``sys.path = ["/var/foo", "/var/bar"]`` then:
     - ``/var/bar/module.py`` - can't be imported, it's shadowed
     - ``/var/bar/package/extra.py`` - can't be imported, its package is shadowed
 
+.. class:: fancy center
+
+    ✽
+
 Presenter notes
 ---------------
 
@@ -424,6 +427,10 @@ Suggested layout (flat, ``tests`` ain't a package, but everything in it is)::
     |   |-- __init__.py
     |   `-- test_foo.py
     `-- test_bar.py
+
+.. class:: fancy center
+
+    ✽
 
 Presenter notes
 ---------------
@@ -726,17 +733,65 @@ Make a ``tests/test_views.py``:
 
 Technically these are not `"end to end"` tests but they are reasonably close for most apps.
 
+----
+
+What's with the ``decode``?
+===========================
+
+.. class:: fancy center
+
+    The Unicode sandwich
+
+.. raw:: html
+
+    <style>
+        .diagram {
+            margin: 1em auto;
+            font-family: serif;
+            font-size: 80%;
+        }
+
+        .diagram td { padding: .25em .5em; text-align: center; }
+        .diagram .t { border-top:    5px solid white; }
+        .diagram .r { border-right:  5px solid white; }
+        .diagram .b { border-bottom: 5px solid white; }
+        .diagram .l { border-left:   5px solid white; }
+
+        .diagram .st { border-top:    2px solid white; }
+        .diagram .sr { border-right:  2px solid white; }
+        .diagram .sb { border-bottom: 2px solid white; }
+        .diagram .sl { border-left:   2px solid white; }
+
+    </style>
+    <table class=diagram cellspacing=0>
+        <tr><td colspan=3>0010100101001011001001110101010110010101</td></tr>
+        <tr><td colspan=2 class="st sr b sl">decode</td><td class=b><em>input</em></td><td></td></tr>
+
+        <tr><td class=l>Unicode</td><td>→</td><td class=r>Unicode</td></tr>
+        <tr><td class=l>       </td><td> </td><td class=r>   ↓   </td></tr>
+        <tr><td class=l>Unicode</td><td>←</td><td class=r>Unicode</td></tr>
+        <tr><td class=l>   ↓   </td><td> </td><td class=r>       </td></tr>
+        <tr><td class=l>Unicode</td><td>→</td><td class=r>Unicode</td></tr>
+
+        <tr><td class=t><em>output</em></td><td colspan=2 class="t sr sb sl">encode</td></tr>
+        <tr><td colspan=3>0010100101001011001001110101010110010101</td></tr>
+    </table>
+
+.. class:: smaller center
+
+    See: https://nedbatchelder.com/text/unipain/unipain.html#35
+
 -----
 
 Making a fixture for questions
 ==============================
 
-And now we continue to struggle with choosing the right amount of assertions:
-
 .. code-block:: py
 
+    from django.utils import timezone
+
     @pytest.fixture
-    def question(question_generator):
+    def question(db):
         return Question.objects.create(
             question_text="What is love?",
             pub_date=timezone.now()
@@ -754,7 +809,7 @@ And now we continue to struggle with choosing the right amount of assertions:
 
 .. class:: fancy center
 
-    ✽ *Story on SDT* ✽
+    ✽
 
 presenter notes
 ---------------
@@ -783,6 +838,320 @@ A cynic might add:
 
 
 -----
+
+Having more question objects
+============================
+
+We can't require a fixture more than once, thus:
+
+.. code-block::
+
+    @pytest.fixture
+    def question_factory(db):
+        now = timezone.now()
+
+        def create_question(question_text, pub_date_delta=timedelta()):
+            return Question.objects.create(
+                question_text=question_text,
+                pub_date=now + pub_date_delta
+            )
+
+        return create_question
+
+
+    def test_index_view_two_questions(client, question_factory):
+        question1 = question_factory("Question 1")
+        question2 = question_factory("Question 2", -timedelta(hours=1))
+
+        response = client.get('/')
+        assert response.status_code == 200
+        assert list(response.context_data['latest_question_list']) == [question1, question2]
+        content = response.content.decode(response.charset)
+        assert 'href="/polls/1/">Question 1</a>' in content
+        assert 'href="/polls/1/">Question 2</a>' in content
+
+----
+
+Having tons of questions
+========================
+
+Note that the view is set to only display the last 5 questions, thus:
+
+.. code-block:: py
+
+    def test_index_view_only_last_five_questions(client, question_factory):
+        questions = [
+            question_factory("Question {}".format(i), -timedelta(hours=i))
+            for i in range(1, 10)
+        ]
+
+        response = client.get('/')
+        assert response.status_code == 200
+        assert list(
+            response.context_data['latest_question_list']
+        ) == questions[:5]
+
+        content = response.content.decode(response.charset)
+        for i in range(1, 6):
+            assert 'href="/polls/{0}/">Question {0}</a>'.format(i) in content
+        assert 'Question 6' not in content
+
+----
+
+Having future questions
+=======================
+
+Questions in the future shouldn't be displayed, thus:
+
+.. code-block:: py
+
+    def test_index_view_exclude_question_published_in_future(client,
+                                                             question_factory):
+        question_factory("Question 1", timedelta(hours=1))
+
+        response = client.get('/')
+        assert response.status_code == 200
+        assert list(response.context_data['latest_question_list']) == []
+        assert 'Question 1' not in response.content.decode(response.charset)
+
+----
+
+Bogus ids
+=========
+
+Proper response should be returned on bogus IDs:
+
+.. code-block:: py
+
+    def test_detail_view_question_not_found(client, db):
+        response = client.get('/999/')
+        assert response.status_code == 404
+
+    def test_vote_question_not_found(client, db):
+        response = client.get('/999/vote/')
+        assert response.status_code == 404
+
+    def test_results_view_question_not_found(client, db):
+        response = client.get('/999/results/')
+        assert response.status_code == 404
+
+-----
+
+Dealing with bad questions
+==========================
+
+Questions that don't have any answers, of course!
+
+.. code-block:: py
+
+    def test_detail_view_question_found(client, question):
+        response = client.get('/%s/' % question.id)
+        assert response.status_code == 200
+        assert 'What is love?' in response.text_content
+        assert 'Someone needs to figure out some answers!' \
+            in response.text_content
+
+        # assertions you'll be sorry for (coupling!)
+        assert response.context_data['object'] == question
+        assert 'polls/detail.html' in response.template_name
+
+----
+
+Isn't the client fixture a bit annoying?
+========================================
+
+It sure is, so lets fix it:
+
+.. sourcecode:: python
+
+    @pytest.fixture
+    def client(client):
+        func = client.request
+
+        def wrapper(**kwargs):
+            # instead of throwing prints all over the place
+            print('>>>>', ' '.join('{}={!r}'.format(*item)
+                                   for item in kwargs.items()))
+            resp = func(**kwargs)
+            print('<<<<', resp, resp.content)
+            # also, decode the content
+            resp.text_content = resp.content.decode(resp.charset)
+            # why not patch resp.content? well ...
+            return resp
+
+        client.request = wrapper
+        return client
+
+Watch the scope when patching stuff. In this case it was fine (``pytest_django.client`` had the same scope - ``"function"``).
+
+----
+
+Creating some answers
+=====================
+
+.. code-block:: py
+
+    @pytest.fixture
+    def question_choice_factory(db):
+        def create_question_choice(question, choice_text, votes=0):
+            return Choice.objects.create(question=question,
+                                         choice_text=choice_text,
+                                         votes=votes)
+        return create_question_choice
+
+
+    def test_vote_question_found_with_choice(client, question,
+                                             question_choice_factory):
+        choice1 = question_choice_factory(question, "Choice 1", votes=0)
+
+        response = client.post('/%s/vote/' % question.id,
+                               data={"choice": choice1.id})
+        assert response.status_code == 302
+        assert response.url == '/%s/results/' % (question.id,)
+
+        choice1.refresh_from_db()
+        assert choice1.votes == 1
+----
+
+Testing the results
+===================
+
+We should check the result page too.
+
+An easy way is to just slap on some extra assertions in the previous test:
+
+.. code-block:: py
+
+    def test_vote_question_found_with_choice(...):
+        ...
+
+
+        response = client.get('/%s/results/' % question.id)
+        assert '<li>Choice 1 -- 1 vote</li>' in response.text_content
+
+The disadvantage is that test becomes bulky and debugging may be harder.
+
+Guess what's missing, template has this:
+
+.. code-block:: html+django
+
+    {% for choice in question.choice_set.all %}
+        <li>{{ choice.choice_text }} --
+            {{ choice.votes }} vote{{ choice.votes|pluralize }}</li>
+    {% endfor %}
+
+
+----
+
+Testing the results
+===================
+
+Problems with newlines?
+
+An alternative is regexes but lets unpack this first:
+
+.. code-block:: py
+
+    assert re.findall(r'<li>Choice 1\s+--\s+1 vote</li>',
+                      response.text_content)
+
+- ``re.findall`` mean find all matches anywhere (don't fall for ``re.match`` - it matches at the start of the string)
+- ``r'foo\bar'`` means no escapes (same as ``'foo\\bar'``)
+- ``\s`` means (in regex parlance) any space (same as ``'[ \t\n\r\f\v]'`` plus the damned Unicode whitespace characters)
+- ``+`` is a qualifier, it means "one or more"
+- ``\s+`` means "one of more space characters"
+
+
+----
+
+Testing bad requests
+====================
+
+Test what happens when there's no form data:
+
+.. code-block:: py
+
+    def test_vote_question_found_no_choice(client, question):
+        response = client.post('/%s/vote/' % question.id)
+        assert response.status_code == 200
+        content = response.content.decode(response.charset)
+        assert 'What is love?' in content
+        assert "You didn&#39;t select a choice." in content
+
+----
+
+Getting ideas about missing tests
+=================================
+
+Suggested use::
+
+    $ pip install pytest-cov
+    $ pytest --cov=. --cov-report=term-missing --cov-branch
+
+Alternatively, create a ``.coveragerc``:
+
+.. sourcecode:: ini
+
+    [run]
+    branch = true
+    source = src
+
+    [report]
+    show_missing = true
+    precision = 2
+
+With that it's simpler to run, just::
+
+    $ pytest --cov
+
+
+.. class:: fancy center
+
+    Note: having 100% coverage doesn't mean you have tested everything. But if you don't you probably haven't.
+
+-----
+
+More on coverage: ignoring irrelevant stuff
+===========================================
+
+In ``.coveragerc``:
+
+.. sourcecode:: ini
+
+    [report]
+    omit =
+        *apps.py
+        *manage.py
+        *wsgi.py
+
+Alternative, have these on the lines that don't need to be covered:
+
+.. sourcecode:: python
+
+    stuff_that_is_not_frequently_used()  # pragma: no cover
+
+-----
+
+Browser tests with pytest-splinter (optional)
+=============================================
+
+Get the right binary from:
+
+    https://github.com/mozilla/geckodriver/releases
+
+Put it in CWD.
+
+.. sourcecode:: python
+
+    def test_index(pages, browser, live_server):
+        browser.visit(live_server + '/')
+        assert browser.is_text_present('Foo')
+
+Explore api at: http://splinter.rtfd.io
+
+
 .. raw:: html
 
-    <script>fitty('.fitty header h1');</script>
+    <script>fitty('header h1');</script>
+
+
