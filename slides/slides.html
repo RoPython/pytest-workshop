@@ -37,7 +37,7 @@ p, body, header {
 }
 
 .slide {
-    position: absolute;
+    position: relative;
     overflow: hidden;
     width: 1000px;
     height: 750px;
@@ -198,41 +198,45 @@ img {
 .presenter_notes,
 #current_presenter_notes,
 #presenter_note {
-  display: none;
+    display: none;
 }
+
 @page {
-  size: landscape;
-  margin: 0;
-  size: 1124px 852px;
+    margin: 0;
+    size: 1031px 781px;
 }
-@page:last {
-  display: none;
-}
-
-
-div.slide-wrapper {
-  padding: 15px;
-}
-div.slide,
-div.slide.current,
-div.slides,
+.slide,
+.slide.current,
+.slides,
 body,
-div.presentation {
-  position: relative !important;
-  margin: 0 !important;
+.presentation {
+    position: relative;
+    margin: 0;
+    box-shadow: none !important;
 }
-div.inner {
-  position: absolute !important;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+
+.inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
-div.slide {
-  page-break-after: avoid;
+
+.slide {
+    margin: 0 !important;
+    page-break-after: avoid;
 }
-div.slide-wrapper:last-of-type .slide {
-  page-break-after: auto;
+
+.slide-wrapper {
+    page-break-after: always;
+    position: relative;
+    margin: 0;
+    padding: 15px;
+}
+* {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
 }
 
     </style>
@@ -266,6 +270,7 @@ div.slide-wrapper:last-of-type .slide {
     background: inherit;
 }
 .slide {
+    position: absolute;
     display: none;
     left: 50%;
     top: 50%;
@@ -515,7 +520,7 @@ div.slide-wrapper:last-of-type .slide {
 }
 
     </style>
-    <style type="text/css">
+    <style type="text/css" media="all">
       /* ======================================
                  FONTS
 ====================================== */
@@ -594,17 +599,17 @@ div#current_presenter_notes a, div#current_presenter_notes a:hover {
 code, tt.docutils.literal {
     color: #6c71c4;
 }
-div.slide {
+.slide {
     background-color: #222;
     color: #eee;
 }
-body.expose div.slide:hover {
+.expose .slide:hover {
     box-shadow: 0 0 0 15px #268bd2;
 }
-body.expose .slide.current {
+.expose .slide.current {
     box-shadow: 0 0 0 30px #b58900;
 }
-body.expose .slide.current:hover {
+.expose .slide.current:hover {
     box-shadow: 0 0 0 15px #268bd2, 0 0 0 30px #b58900;
 }
 .presenter_notes {
@@ -625,9 +630,9 @@ body.expose .slide.current:hover {
 .qr svg {
     box-shadow: inset 0 0 10px #eee8d5;
 }
-div.slides, body.expose div.slides.nocontext,
-body.expose .slide.current,
-body.expose .slide.current .inner {
+.slides, .expose .slides.nocontext,
+.expose .slide.current,
+.expose .slide.current .inner {
     /*background: #000;*/
 }
 
@@ -679,6 +684,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
 .small {
     font-size: 80%;
 }
+
 .smaller {
     font-size: 60%;
 }
@@ -690,6 +696,22 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
 .fancy {
     font-size: 120%;
     font-weight: bold;
+}
+
+.fitty header {
+    right: 10px;
+}
+
+.fitty header h1 {
+    display: inline-block;
+    white-space: nowrap;
+}
+li {
+    padding: 5px 0;
+}
+
+pre {
+    max-height: none;
 }
 
       </style>
@@ -817,7 +839,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         changeSlideElClass(currentSlideNo, 'current');
         changeSlideElClass(currentSlideNo + 1, 'next');
         changeSlideElClass(currentSlideNo + 2, 'after_next');
-        for (i = currentSlideNo + 3; i < slides.length + 1; i++)  changeSlideElClass(i, 'none');
+        for (i = currentSlideNo + 3; i < slides.length + 1; i++) changeSlideElClass(i, 'none');
 
         highlightCurrentTocLink();
 
@@ -825,9 +847,8 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
 
         updatePresenterNotes();
 
-        if (updateOther) {
-            updateOtherPage();
-        }
+        if (updateOther) updateOtherPage();
+        if (overviewActive) scrollToCurrent();
     };
 
     var updatePresenterNotes = function () {
@@ -975,20 +996,19 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         if (!overviewActive) {
             addClass(document.body, 'expose');
             overviewActive = true;
-            setTimeout(function() {
-                try {
-                    document.querySelector('.slide.current').parentElement.scrollIntoView(true);
-                } catch (e) {
-                }
-            });
-            setScale(1);
+            scrollToCurrent();
         } else {
             removeClass(document.body, 'expose');
             overviewActive = false;
-            setScale();
         }
+        setScale();
         updateOverview();
     };
+    var scrollToCurrent = function () {
+        setTimeout(function () {
+            document.querySelector('.slide.current').parentElement.scrollIntoView(true);
+        });
+    }
 
     var updateOverview = function () {
         try {
@@ -1024,9 +1044,9 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
         return 1 / Math.max(sy, sx);
     };
 
-    var setScale = function (scale) {
+    var setScale = function () {
         var presentation = document.getElementsByClassName('slides')[0];
-        var transform = 'scale(' + (scale || computeScale()) + ')';
+        var transform = 'scale(' + (overviewActive ? 1 : computeScale()) + ')';
         presentation.style.MozTransform = transform;
         presentation.style.WebkitTransform = transform;
         presentation.style.OTransform = transform;
@@ -1296,6 +1316,14 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
     </script>
     
     
+      
+      <script>/*
+ * fitty v2.2.5 - Snugly resizes text to fit its parent container
+ * Copyright (c) 2017 Rik Schennink <hello@rikschennink.nl> (http://rikschennink.nl/)
+ */
+!function(e,t){if("function"==typeof define&&define.amd)define(["module","exports"],t);else if("undefined"!=typeof exports)t(module,exports);else{var n={exports:{}};t(n,n.exports),e.fitty=n.exports}}(this,function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(e[i]=n[i])}return e};t.default=function(e){function t(e,t){var i=n({},F,t),r=e.map(function(e){var t=n({},i,{element:e});return S(t),T(t),{element:e,fit:b(t,o.DIRTY),unsubscribe:w(t)}});return l(),r}function i(e){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{};return"string"==typeof e?t(r(document.querySelectorAll(e)),n):t([e],n)[0]}if(e){var r=function(e){return[].slice.call(e)},o={IDLE:0,DIRTY_CONTENT:1,DIRTY_LAYOUT:2,DIRTY:3},u=[],a=null,l="requestAnimationFrame"in e?function(){e.cancelAnimationFrame(a),a=e.requestAnimationFrame(function(){s(u.filter(function(e){return e.dirty}))})}:function(){},c=function(e){return function(){u.forEach(function(t){t.dirty=e}),l()}},s=function(e){e.filter(function(e){return!e.styleComputed}).forEach(function(e){e.styleComputed=p(e)}),e.filter(m).forEach(y),e.filter(d).forEach(f),e.forEach(v),e.forEach(h)},f=function(e){e.availableWidth=e.element.parentNode.clientWidth,e.currentWidth=e.element.scrollWidth,e.previousFontSize=e.currentFontSize,e.currentFontSize=Math.min(Math.max(e.minSize,e.availableWidth/e.currentWidth*e.previousFontSize),e.maxSize),e.whiteSpace=e.multiLine&&e.currentFontSize===e.minSize?"normal":"nowrap"},d=function(e){return e.dirty!==o.DIRTY_LAYOUT||e.dirty===o.DIRTY_LAYOUT&&e.element.parentNode.clientWidth!==e.availableWidth},p=function(t){var n=e.getComputedStyle(t.element,null);t.currentFontSize=parseInt(n.getPropertyValue("font-size"),10),t.display=n.getPropertyValue("display"),t.whiteSpace=n.getPropertyValue("white-space")},m=function(e){var t=!1;return/inline-/.test(e.display)||(t=!0,e.display="inline-block"),"nowrap"!==e.whiteSpace&&(t=!0,e.whiteSpace="nowrap"),t},v=function(e){y(e),e.dirty=o.IDLE},y=function(e){e.originalStyle||(e.originalStyle=e.element.getAttribute("style")||""),e.element.style.cssText=e.originalStyle+";white-space:"+e.whiteSpace+";display:"+e.display+";font-size:"+e.currentFontSize+"px"},h=function(e){e.element.dispatchEvent(new CustomEvent("fit",{detail:{oldValue:e.previousFontSize,newValue:e.currentFontSize,scaleFactor:e.currentFontSize/e.previousFontSize}}))},b=function(e,t){return function(){e.dirty=t,l()}},S=function(e){e.newbie=!0,e.dirty=!0,u.push(e)},w=function(e){return function(){u=u.filter(function(t){return t.element!==e.element}),e.observeMutations&&e.observer.disconnect(),e.element.style.cssText=e.originalStyle}},T=function(e){e.observeMutations&&(e.observer=new MutationObserver(b(e,o.DIRTY_CONTENT)),e.observer.observe(e.element,e.observeMutations))},z={subtree:!0,childList:!0,characterData:!0},F={minSize:16,maxSize:512,multiLine:!0,observeMutations:"MutationObserver"in e&&z},g=null,D=function(){e.clearTimeout(g),g=e.setTimeout(c(o.DIRTY_LAYOUT),i.observeWindowDelay)},E=["resize","orientationchange"];return Object.defineProperty(i,"observeWindow",{set:function(t){var n=(t?"add":"remove")+"EventListener";E.forEach(function(t){e[n](t,D)})}}),i.observeWindow=!0,i.observeWindowDelay=100,i.fitAll=c(o.DIRTY),i}}("undefined"==typeof window?null:window),e.exports=t.default});</script>
+      
+    
     <!-- /Javascripts -->
 </head>
 <body>
@@ -1331,7 +1359,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
             </aside>
             
             <aside class="page_number">
-              1/31
+              1/35
             </aside>
           </footer>
         </div>
@@ -1365,7 +1393,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
             </aside>
             
             <aside class="page_number">
-              2/31
+              2/35
             </aside>
           </footer>
         </div>
@@ -1412,7 +1440,7 @@ pre .vi{color:#68838b!important;font-weight:700!important;}
             </aside>
             
             <aside class="page_number">
-              3/31
+              3/35
             </aside>
           </footer>
         </div>
@@ -1459,7 +1487,7 @@ Flask (werkzeug+sqlalchemy+jinja2) = 82k SLOC</p>
             </aside>
             
             <aside class="page_number">
-              4/31
+              4/35
             </aside>
           </footer>
         </div>
@@ -1508,7 +1536,7 @@ $ python manage.py runserver
             </aside>
             
             <aside class="page_number">
-              5/31
+              5/35
             </aside>
           </footer>
         </div>
@@ -1553,7 +1581,7 @@ $ tox -- django-admin runserver
             </aside>
             
             <aside class="page_number">
-              6/31
+              6/35
             </aside>
           </footer>
         </div>
@@ -1561,7 +1589,7 @@ $ tox -- django-admin runserver
       
       <!-- slide source: slides/slides.rst -->
       <div class="slide-wrapper">
-        <div class="slide has_footer slide-7">
+        <div class="slide fitty has_footer slide-7">
           <div class="inner">
             
             <header><h1>Django primer: management commands</h1></header>
@@ -1597,7 +1625,7 @@ $ tox -- django-admin runserver
             </aside>
             
             <aside class="page_number">
-              7/31
+              7/35
             </aside>
           </footer>
         </div>
@@ -1638,7 +1666,7 @@ models-wt.svg</object>
             </aside>
             
             <aside class="page_number">
-              8/31
+              8/35
             </aside>
           </footer>
         </div>
@@ -1690,7 +1718,7 @@ models-wt.svg</object>
             </aside>
             
             <aside class="page_number">
-              9/31
+              9/35
             </aside>
           </footer>
         </div>
@@ -1747,7 +1775,7 @@ models-wt.svg</object>
             </aside>
             
             <aside class="page_number">
-              10/31
+              10/35
             </aside>
           </footer>
         </div>
@@ -1795,7 +1823,7 @@ models-wt.svg</object>
             </aside>
             
             <aside class="page_number">
-              11/31
+              11/35
             </aside>
           </footer>
         </div>
@@ -1810,7 +1838,7 @@ models-wt.svg</object>
             
             
             <section><p>Templates automatically call and ignore missing attributes:</p>
-<ul class="simple">
+<ul class="smaller simple">
 <li><tt class="docutils literal">{{ foo.bar.missing }}</tt> outputs nothing</li>
 <li><tt class="docutils literal">{{ foo }}</tt> calls foo if it's a callable (__call__)</li>
 <li><tt class="docutils literal">{{ foo(1, 2, 3) }}</tt> is not allowed (by design)</li>
@@ -1823,8 +1851,10 @@ models-wt.svg</object>
 <span class="p">&lt;</span><span class="nt">form</span> <span class="na">action</span><span class="o">=</span><span class="s">&quot;</span><span class="cp">{%</span> <span class="k">url</span> <span class="s1">&#39;polls:vote&#39;</span> <span class="nv">question.id</span> <span class="cp">%}</span><span class="s">&quot;</span> <span class="na">method</span><span class="o">=</span><span class="s">&quot;post&quot;</span><span class="p">&gt;</span>
 <span class="cp">{%</span> <span class="k">csrf_token</span> <span class="cp">%}</span>
 <span class="cp">{%</span> <span class="k">for</span> <span class="nv">choice</span> <span class="k">in</span> <span class="nv">question.choice_set.all</span> <span class="cp">%}</span>
-    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;radio&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;choice&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;choice</span><span class="cp">{{</span> <span class="nb">forloop</span><span class="nv">.counter</span> <span class="cp">}}</span><span class="s">&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">choice.id</span> <span class="cp">}}</span><span class="s">&quot;</span> <span class="p">/&gt;</span>
-    <span class="p">&lt;</span><span class="nt">label</span> <span class="na">for</span><span class="o">=</span><span class="s">&quot;choice</span><span class="cp">{{</span> <span class="nb">forloop</span><span class="nv">.counter</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="p">&gt;</span><span class="cp">{{</span> <span class="nv">choice.choice_text</span> <span class="cp">}}</span><span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;&lt;</span><span class="nt">br</span> <span class="p">/&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;radio&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;choice&quot;</span>
+           <span class="na">id</span><span class="o">=</span><span class="s">&quot;choice</span><span class="cp">{{</span> <span class="nb">forloop</span><span class="nv">.counter</span> <span class="cp">}}</span><span class="s">&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">choice.id</span> <span class="cp">}}</span><span class="s">&quot;</span> <span class="p">/&gt;</span>
+    <span class="p">&lt;</span><span class="nt">label</span> <span class="na">for</span><span class="o">=</span><span class="s">&quot;choice</span><span class="cp">{{</span> <span class="nb">forloop</span><span class="nv">.counter</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="p">&gt;</span>
+        <span class="cp">{{</span> <span class="nv">choice.choice_text</span> <span class="cp">}}</span><span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
 <span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
 <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;submit&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;Vote&quot;</span> <span class="p">/&gt;</span>
 <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
@@ -1847,7 +1877,7 @@ models-wt.svg</object>
             </aside>
             
             <aside class="page_number">
-              12/31
+              12/35
             </aside>
           </footer>
         </div>
@@ -1896,7 +1926,7 @@ models-wt.svg</object>
             </aside>
             
             <aside class="page_number">
-              13/31
+              13/35
             </aside>
           </footer>
         </div>
@@ -1938,7 +1968,7 @@ models-wt.svg</object>
             </aside>
             
             <aside class="page_number">
-              14/31
+              14/35
             </aside>
           </footer>
         </div>
@@ -1976,7 +2006,7 @@ models-wt.svg</object>
             </aside>
             
             <aside class="page_number">
-              15/31
+              15/35
             </aside>
           </footer>
         </div>
@@ -2019,7 +2049,7 @@ $ pip install pytest
             </aside>
             
             <aside class="page_number">
-              16/31
+              16/35
             </aside>
           </footer>
         </div>
@@ -2072,7 +2102,7 @@ tests/test_example.py:5: AssertionError
             </aside>
             
             <aside class="page_number">
-              17/31
+              17/35
             </aside>
           </footer>
         </div>
@@ -2127,7 +2157,7 @@ tests/test_example.py:5: AssertionError
             </aside>
             
             <aside class="page_number">
-              18/31
+              18/35
             </aside>
           </footer>
         </div>
@@ -2179,7 +2209,7 @@ tests/test_example.py:5: AssertionError
             </aside>
             
             <aside class="page_number">
-              19/31
+              19/35
             </aside>
           </footer>
         </div>
@@ -2234,7 +2264,7 @@ tests/
             </aside>
             
             <aside class="page_number">
-              20/31
+              20/35
             </aside>
           </footer>
         </div>
@@ -2252,19 +2282,21 @@ tests/
 Django (the result of <tt class="docutils literal">dumpdata</tt> command).</p>
 <pre><span></span><span class="nd">@pytest.fixture</span>
 <span class="k">def</span> <span class="nf">myfixture</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-    <span class="c1"># do some setup</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;myfixture: do some setup&#39;</span><span class="p">)</span>
     <span class="k">yield</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-    <span class="c1"># do some teardown</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;myfixture: do some teardown&#39;</span><span class="p">)</span>
 
 <span class="nd">@pytest.fixture</span>
-<span class="k">def</span> <span class="nf">mycomplexfixture</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">fixture1</span><span class="p">,</span> <span class="n">fixture2</span><span class="p">):</span>
-    <span class="k">pass</span>
+<span class="k">def</span> <span class="nf">mycomplexfixture</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">myfixture</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;myfixture: do some setup&#39;</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">myfixture</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;myfixture: do some teardown&#39;</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">test_fixture</span><span class="p">(</span><span class="n">myfixture</span><span class="p">):</span>
     <span class="k">assert</span> <span class="n">myfixture</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 
 <span class="k">def</span> <span class="nf">test_complexfixture</span><span class="p">(</span><span class="n">mycomplexfixture</span><span class="p">):</span>
-    <span class="k">pass</span>
+    <span class="k">assert</span> <span class="n">myfixture</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
 </pre></section>
             
           </div>
@@ -2284,7 +2316,7 @@ Django (the result of <tt class="docutils literal">dumpdata</tt> command).</p>
             </aside>
             
             <aside class="page_number">
-              21/31
+              21/35
             </aside>
           </footer>
         </div>
@@ -2339,7 +2371,7 @@ Django (the result of <tt class="docutils literal">dumpdata</tt> command).</p>
             </aside>
             
             <aside class="page_number">
-              22/31
+              22/35
             </aside>
           </footer>
         </div>
@@ -2350,7 +2382,7 @@ Django (the result of <tt class="docutils literal">dumpdata</tt> command).</p>
         <div class="slide has_footer slide-23">
           <div class="inner">
             
-            <header><h1>Pytest basics: fixture scoping</h1></header>
+            <header><h1>Pytest: fixture scoping</h1></header>
             
             
             <section><pre><span></span><span class="nd">@pytest.fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s2">&quot;function&quot;</span><span class="p">,</span> <span class="n">autouse</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
@@ -2382,7 +2414,7 @@ Django (the result of <tt class="docutils literal">dumpdata</tt> command).</p>
             </aside>
             
             <aside class="page_number">
-              23/31
+              23/35
             </aside>
           </footer>
         </div>
@@ -2431,7 +2463,7 @@ Django (the result of <tt class="docutils literal">dumpdata</tt> command).</p>
             </aside>
             
             <aside class="page_number">
-              24/31
+              24/35
             </aside>
           </footer>
         </div>
@@ -2480,7 +2512,7 @@ Django (the result of <tt class="docutils literal">dumpdata</tt> command).</p>
             </aside>
             
             <aside class="page_number">
-              25/31
+              25/35
             </aside>
           </footer>
         </div>
@@ -2526,7 +2558,7 @@ tests/test_param.py::test_param[2-1] PASSED
             </aside>
             
             <aside class="page_number">
-              26/31
+              26/35
             </aside>
           </footer>
         </div>
@@ -2575,7 +2607,7 @@ tests/test_param.py::test_func[func1-numbers1] PASSED
             </aside>
             
             <aside class="page_number">
-              27/31
+              27/35
             </aside>
           </footer>
         </div>
@@ -2625,7 +2657,7 @@ tests/test_param.py::test_func[max-black] PASSED
             </aside>
             
             <aside class="page_number">
-              28/31
+              28/35
             </aside>
           </footer>
         </div>
@@ -2676,7 +2708,7 @@ tests/test_example.py::test_func[min-white] PASSED
             </aside>
             
             <aside class="page_number">
-              29/31
+              29/35
             </aside>
           </footer>
         </div>
@@ -2716,7 +2748,7 @@ tests/test_example.py::test_func[min-white] PASSED
             </aside>
             
             <aside class="page_number">
-              30/31
+              30/35
             </aside>
           </footer>
         </div>
@@ -2756,17 +2788,36 @@ $ pip install pytest-django
             </aside>
             
             <aside class="page_number">
-              31/31
+              31/35
             </aside>
           </footer>
         </div>
       </div>
       
-      <!-- slide source:  -->
+      <!-- slide source: slides/slides.rst -->
       <div class="slide-wrapper">
-        <div class="slide slide-">
+        <div class="slide has_footer slide-32">
           <div class="inner">
             
+            <header><h1>The <tt class="docutils literal">client</tt> fixture</h1></header>
+            
+            
+            <section><p>The <tt class="docutils literal">client</tt> fixture makes an instance of <a class="reference external" href="https://docs.djangoproject.com/en/dev/topics/testing/tools/#the-test-client">django.test.Client</a>.</p>
+<p>Make a <tt class="docutils literal">tests/test_views.py</tt>:</p>
+<pre><span></span><span class="k">def</span> <span class="nf">test_index_view_no_question</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+
+    <span class="c1"># use these in moderation (coupling)</span>
+    <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;latest_question_list&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="p">[]</span>
+
+    <span class="c1"># a better assertion (end-to-end style):</span>
+    <span class="k">assert</span> <span class="s1">&#39;No polls are available.&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">charset</span><span class="p">)</span>
+    <span class="c1"># if you use python 2 you can just do</span>
+    <span class="k">assert</span> <span class="s1">&#39;No polls are available.&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+</pre>
+<p>Technically these are not <cite>&quot;end to end&quot;</cite> tests but they are reasonably close for most apps.</p></section>
             
           </div>
           <div class="presenter_notes">
@@ -2777,9 +2828,211 @@ $ pip install pytest-django
           </div>
           <footer>
             
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
             
             <aside class="page_number">
-              /31
+              32/35
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-33">
+          <div class="inner">
+            
+            <header><h1>Making a fixture for questions</h1></header>
+            
+            
+            <section><p>And now we continue to struggle with choosing the right amount of assertions:</p>
+<pre><span></span><span class="nd">@pytest.fixture</span>
+<span class="k">def</span> <span class="nf">question</span><span class="p">(</span><span class="n">question_generator</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Question</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">question_text</span><span class="o">=</span><span class="s2">&quot;What is love?&quot;</span><span class="p">,</span>
+        <span class="n">pub_date</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_index_view_one_question</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">question</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+    <span class="c1"># list cause it&#39;s an QuerySet</span>
+    <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">context_data</span><span class="p">[</span><span class="s1">&#39;latest_question_list&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="p">[</span>
+        <span class="n">question</span><span class="p">]</span>
+    <span class="c1"># how much markup to include?</span>
+    <span class="k">assert</span> <span class="s1">&#39;href=&quot;/polls/1/&quot;&gt;What is love?&lt;/a&gt;&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">charset</span><span class="p">)</span>
+</pre>
+<p class="fancy center">✽ <em>Story on SDT</em> ✽</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+              <h3>Stupidity Driven Testing</h3>
+<ol class="arabic simple">
+<li>write code</li>
+<li>suffer a bit but eventually find bug</li>
+<li>write test for said bug, lest it happen again</li>
+</ol>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              33/35
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-34">
+          <div class="inner">
+            
+            <header><h1>Pragmatic testing</h1></header>
+            
+            
+            <section><ol class="arabic simple">
+<li>write code</li>
+<li>do some manual or sloppy tests</li>
+<li>rewrite code cause it was a terrible terrible idea</li>
+<li>a cycle of: write tests, find bugs, figure out what's untested</li>
+</ol>
+<p>A cynic might add:</p>
+<ol class="arabic simple" start="5">
+<li>rewrite more code, suffer cause tests are too coupled with code</li>
+<li>find more bugs, suffer cause tests are too lose</li>
+</ol></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              34/35
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides/slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide has_footer slide-35">
+          <div class="inner">
+            
+            
+            <section><blockquote>
+<dl class="docutils">
+<dt>def test_index_view_two_questions(client, question_generator):</dt>
+<dd><p class="first">now = timezone.now()
+question1 = question_generator(question_text=&quot;Question 1&quot;, pub_date=now)
+question2 = question_generator(question_text=&quot;Question 2&quot;, pub_date=now - timedelta(hours=1))</p>
+<p class="last">response = client.get('/')
+assert response.status_code == 200
+assert list(response.context_data['latest_question_list']) == [question1, question2]</p>
+</dd>
+<dt>def test_index_view_only_last_five_questions(client, question_generator):</dt>
+<dd><p class="first">now = timezone.now()
+questions = [question_generator(question_text=&quot;Question {}&quot;.format(i), pub_date=now - timedelta(hours=i))</p>
+<blockquote>
+for i in range(0, 10)]</blockquote>
+<p class="last">response = client.get('/')
+assert response.status_code == 200
+assert list(response.context_data['latest_question_list']) == questions[:5]</p>
+</dd>
+<dt>def test_index_view_exclude_question_published_in_future(client, question_generator):</dt>
+<dd><p class="first">now = timezone.now()
+question1 = question_generator(question_text=&quot;Question 1&quot;, pub_date=now)
+question2 = question_generator(question_text=&quot;Question 2&quot;, pub_date=now + timedelta(hours=1))</p>
+<p class="last">response = client.get('/')
+assert response.status_code == 200
+assert list(response.context_data['latest_question_list']) == [question1]</p>
+</dd>
+<dt>def test_vote_question_not_found(client, db):</dt>
+<dd>response = client.get('/999/vote/')
+assert response.status_code == 404</dd>
+<dt>def test_vote_question_found_no_choice(client, question):</dt>
+<dd>response = client.post('/%s/vote/' % question.id)
+assert response.status_code == 200
+assert question.question_text in force_text(response.content)
+assert escape(&quot;You didn't select a choice.&quot;) in force_text(response.content)</dd>
+<dt>def test_vote_question_found_with_choice(client, question, question_choice_generator):</dt>
+<dd><p class="first">choice1 = question_choice_generator(question=question, choice_text=&quot;Choice 1&quot;, votes=0)</p>
+<dl class="docutils">
+<dt>response = client.post('/%s/vote/' % question.id,</dt>
+<dd>data={&quot;choice&quot;: choice1.id})</dd>
+</dl>
+<p>assert response.status_code == 302
+assert response.url == reverse('polls:results', args=(question.id,))</p>
+<p class="last">choice1.refresh_from_db()
+assert choice1.votes == 1</p>
+</dd>
+<dt>def test_detail_view_question_not_found(client, db):</dt>
+<dd>response = client.get('/999/')
+assert response.status_code == 404</dd>
+<dt>def test_detail_view_question_found(client, question):</dt>
+<dd>response = client.get('/%s/' % question.id)
+assert response.status_code == 200
+assert response.context_data['object'] == question
+assert 'polls/detail.html' in response.template_name</dd>
+<dt>def test_results_view_question_not_found(client, db):</dt>
+<dd>response = client.get('/999/results/')
+assert response.status_code == 404</dd>
+<dt>def test_results_view_question_found(client, question):</dt>
+<dd>response = client.get('/%s/results/' % question.id)
+assert response.status_code == 200
+assert response.context_data['object'] == question
+assert 'polls/results.html' in response.template_name</dd>
+</dl>
+</blockquote>
+<script>fitty('.fitty header h1');</script></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+              RoPython Cluj — <a class="reference external" href="https://www.facebook.com/ropython/">Facebook</a>, <a class="reference external" href="https://www.meetup.com/RoPython-Cluj/">Meetup.com</a>
+            
+            
+            <aside class="source">
+              Source: <a href="slides/slides.rst">slides/slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              35/35
             </aside>
           </footer>
         </div>
@@ -2926,7 +3179,7 @@ $ pip install pytest-django
       
       
       <tr id="toc-row-23">
-        <th><a href="#slide:23">Pytest basics: fixture scoping</a></th>
+        <th><a href="#slide:23">Pytest: fixture scoping</a></th>
         <td><a href="#slide:23">23</a></td>
       </tr>
       
@@ -2979,6 +3232,30 @@ $ pip install pytest-django
       </tr>
       
       
+      <tr id="toc-row-32">
+        <th><a href="#slide:32">The <tt class="docutils literal">client</tt> fixture</a></th>
+        <td><a href="#slide:32">32</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-33">
+        <th><a href="#slide:33">Making a fixture for questions</a></th>
+        <td><a href="#slide:33">33</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-34">
+        <th><a href="#slide:34">Pragmatic testing</a></th>
+        <td><a href="#slide:34">34</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-35">
+        <th><a href="#slide:35">-</a></th>
+        <td><a href="#slide:35">35</a></td>
+      </tr>
+      
+      
     </table>
   </div>
   
@@ -3024,7 +3301,7 @@ $ pip install pytest-django
       </tr>
     </table>
     <br>
-    <strong>Generated with Darkslide 4.0.0</strong>
+    <strong>Generated with Darkslide 4.0.1</strong>
   </div>
   <script>main()</script>
 </body>

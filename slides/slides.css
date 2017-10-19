@@ -9,6 +9,7 @@
 .small {
     font-size: 80%;
 }
+
 .smaller {
     font-size: 60%;
 }
@@ -20,4 +21,20 @@
 .fancy {
     font-size: 120%;
     font-weight: bold;
+}
+
+.fitty header {
+    right: 10px;
+}
+
+.fitty header h1 {
+    display: inline-block;
+    white-space: nowrap;
+}
+li {
+    padding: 5px 0;
+}
+
+pre {
+    max-height: none;
 }

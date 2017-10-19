@@ -1,6 +1,5 @@
 from datetime import timedelta
 
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.html import escape
@@ -10,12 +9,17 @@ def test_index_view_no_question(client, db):
     response = client.get('/')
     assert response.status_code == 200
     assert list(response.context_data['latest_question_list']) == []
+    # a better assertion (end-to-end style):
+    assert 'No polls are available.' in response.content.decode(response.charset)
+    # if you use python 2 you can just do
+    assert 'No polls are available.' in response.content
 
 
 def test_index_view_one_question(client, question):
     response = client.get('/')
     assert response.status_code == 200
     assert list(response.context_data['latest_question_list']) == [question]
+    assert 'href="/polls/1/">What is love?</a>' in response.content.decode(response.charset)
 
 
 def test_index_view_two_questions(client, question_generator):
@@ -66,7 +70,7 @@ def test_vote_question_found_with_choice(client, question, question_choice_gener
     response = client.post('/%s/vote/' % question.id,
                            data={"choice": choice1.id})
     assert response.status_code == 302
-    assert response.url == reverse('polls:results', args=(question.id,))
+    assert response.url == '/%s/results/' % (question.id,)
 
     choice1.refresh_from_db()
     assert choice1.votes == 1

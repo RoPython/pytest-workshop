@@ -99,6 +99,8 @@ Windows (at least use `clink <http://mridgers.github.io/clink/>`_)::
 Django primer: management commands
 ==================================
 
+.fx: fitty
+
 Management commands:
 
 Either through ``manage.py`` or ``django-admin``:
@@ -225,10 +227,12 @@ Django primer: templates
 
 Templates automatically call and ignore missing attributes:
 
-- ``{{ foo.bar.missing }}`` outputs nothing
-- ``{{ foo }}`` calls foo if it's a callable (__call__)
-- ``{{ foo(1, 2, 3) }}`` is not allowed (by design)
-- ``{{ foo|default:"}}" }}`` is not possible (parser ain't very smart)
+.. class:: smaller
+
+    - ``{{ foo.bar.missing }}`` outputs nothing
+    - ``{{ foo }}`` calls foo if it's a callable (__call__)
+    - ``{{ foo(1, 2, 3) }}`` is not allowed (by design)
+    - ``{{ foo|default:"}}" }}`` is not possible (parser ain't very smart)
 
 .. code-block:: html+django
 
@@ -239,14 +243,15 @@ Templates automatically call and ignore missing attributes:
     <form action="{% url 'polls:vote' question.id %}" method="post">
     {% csrf_token %}
     {% for choice in question.choice_set.all %}
-        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
-        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br />
+        <input type="radio" name="choice"
+               id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
+        <label for="choice{{ forloop.counter }}">
+            {{ choice.choice_text }}</label>
     {% endfor %}
     <input type="submit" value="Vote" />
     </form>
 
 ----
-
 
 Tests
 =====
@@ -442,19 +447,21 @@ Django (the result of ``dumpdata`` command).
 
     @pytest.fixture
     def myfixture(request):
-        # do some setup
+        print('myfixture: do some setup')
         yield [1, 2, 3]
-        # do some teardown
+        print('myfixture: do some teardown')
 
     @pytest.fixture
-    def mycomplexfixture(request, fixture1, fixture2):
-        pass
+    def mycomplexfixture(request, myfixture):
+        print('myfixture: do some setup')
+        yield myfixture + [4, 5]
+        print('myfixture: do some teardown')
 
     def test_fixture(myfixture):
         assert myfixture == [1, 2, 3]
 
     def test_complexfixture(mycomplexfixture):
-        pass
+        assert myfixture == [1, 2, 3, 4, 5]
 
 -----
 
@@ -490,8 +497,8 @@ Quick interlude: simple DI impl.
 
 -----
 
-Pytest basics: fixture scoping
-==============================
+Pytest: fixture scoping
+=======================
 
 .. sourcecode:: python
 
@@ -694,3 +701,88 @@ Unfortunately it doesn't go through ``manage.py`` so we need to specify the sett
 
 ------
 
+The ``client`` fixture
+======================
+
+The ``client`` fixture makes an instance of `django.test.Client
+<https://docs.djangoproject.com/en/dev/topics/testing/tools/#the-test-client>`_.
+
+Make a ``tests/test_views.py``:
+
+.. code-block:: py
+
+    def test_index_view_no_question(client, db):
+        response = client.get('/')
+        assert response.status_code == 200
+
+        # use these in moderation (coupling)
+        assert list(response.context_data['latest_question_list']) == []
+
+        # a better assertion (end-to-end style):
+        assert 'No polls are available.' in response.content.decode(
+            response.charset)
+        # if you use python 2 you can just do
+        assert 'No polls are available.' in response.content
+
+Technically these are not `"end to end"` tests but they are reasonably close for most apps.
+
+-----
+
+Making a fixture for questions
+==============================
+
+And now we continue to struggle with choosing the right amount of assertions:
+
+.. code-block:: py
+
+    @pytest.fixture
+    def question(question_generator):
+        return Question.objects.create(
+            question_text="What is love?",
+            pub_date=timezone.now()
+        )
+
+    def test_index_view_one_question(client, question):
+        response = client.get('/')
+        assert response.status_code == 200
+        # list cause it's an QuerySet
+        assert list(response.context_data['latest_question_list']) == [
+            question]
+        # how much markup to include?
+        assert 'href="/polls/1/">What is love?</a>' in response.content.decode(
+            response.charset)
+
+.. class:: fancy center
+
+    ✽ *Story on SDT* ✽
+
+presenter notes
+---------------
+
+Stupidity Driven Testing
+````````````````````````
+
+#. write code
+#. suffer a bit but eventually find bug
+#. write test for said bug, lest it happen again
+
+----
+
+Pragmatic testing
+=================
+
+#. write code
+#. do some manual or sloppy tests
+#. rewrite code cause it was a terrible terrible idea
+#. a cycle of: write tests, find bugs, figure out what's untested
+
+A cynic might add:
+
+5. rewrite more code, suffer cause tests are too coupled with code
+#. find more bugs, suffer cause tests are too lose
+
+
+-----
+.. raw:: html
+
+    <script>fitty('.fitty header h1');</script>
