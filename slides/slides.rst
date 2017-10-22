@@ -38,21 +38,6 @@ Workshop content
 
     Ask anytime and anything. Ask for pauses.
 
------
-
-Django overview
-===============
-
-* Most popular, very active development
-* Django does establish certain structure on projects
-  but it's not written in stone (https://djangopackages.org/grids/g/microframeworks/)
-* Django ain't that big:
-
-    Django = 79k SLOC
-    Flask (werkzeug+sqlalchemy+jinja2) = 82k SLOC
-
-* Others have way has less ecosystem, less resources and stuff you can reuse
-
 ----
 
 Running the project: virtualenv
@@ -98,7 +83,7 @@ Windows (at least use `clink <http://mridgers.github.io/clink/>`_)::
 
 Django primer: management commands
 ==================================
-
+.fx: fitty
 
 Management commands:
 
@@ -472,8 +457,9 @@ Django (the result of ``dumpdata`` command).
 
 -----
 
-Quick interlude: simple DI impl.
-================================
+Quick interlude: simple DI implementation
+=========================================
+.fx: fitty
 
 .. sourcecode:: python
 
@@ -844,30 +830,28 @@ Having more question objects
 
 We can't require a fixture more than once, thus:
 
-.. code-block::
+.. code-block:: py
 
     @pytest.fixture
     def question_factory(db):
         now = timezone.now()
-
         def create_question(question_text, pub_date_delta=timedelta()):
             return Question.objects.create(
                 question_text=question_text,
                 pub_date=now + pub_date_delta
             )
-
         return create_question
-
 
     def test_index_view_two_questions(client, question_factory):
         question1 = question_factory("Question 1")
         question2 = question_factory("Question 2", -timedelta(hours=1))
-
         response = client.get('/')
         assert response.status_code == 200
-        assert list(response.context_data['latest_question_list']) == [question1, question2]
+        assert list(response.context_data['latest_question_list']) == [
+            question1, question2]
         content = response.content.decode(response.charset)
-        assert 'href="/polls/1/">Question 1</a>' in content
+        assert '/polls/1/' in content
+        assert 'Question 1' in content
         assert 'href="/polls/1/">Question 2</a>' in content
 
 ----
@@ -959,6 +943,7 @@ Questions that don't have any answers, of course!
 
 Isn't the client fixture a bit annoying?
 ========================================
+.fx: fitty
 
 It sure is, so lets fix it:
 
@@ -1113,6 +1098,7 @@ With that it's simpler to run, just::
 
 More on coverage: ignoring irrelevant stuff
 ===========================================
+.fx: fitty
 
 In ``.coveragerc``:
 
@@ -1134,6 +1120,7 @@ Alternative, have these on the lines that don't need to be covered:
 
 Browser tests with pytest-splinter (optional)
 =============================================
+.fx: fitty
 
 Get the right binary from:
 
@@ -1152,6 +1139,6 @@ Explore api at: http://splinter.rtfd.io
 
 .. raw:: html
 
-    <script>fitty('header h1', {maxSize: 64});</script>
+    <script>setTimeout(function(){ fitty('.fitty header h1', {maxSize: 64}); }, 1000);</script>
 
 
